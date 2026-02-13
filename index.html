@@ -90,6 +90,10 @@ header p{font-size:.85em;opacity:.8;margin-bottom:12px;font-weight:300}
 .src-esri{background:#7b1fa2;color:#fff}
 .src-noaa{background:#00838f;color:#fff}
 .src-other{background:#888;color:#fff}
+.src-spc{background:#d84315;color:#fff}
+.src-nhc{background:#0d47a1;color:#fff}
+.src-navy{background:#1a237e;color:#fff}
+.src-usda{background:#558b2f;color:#fff}
 .copy-btn{background:none;border:1px solid #ddd;border-radius:3px;padding:3px 6px;cursor:pointer;font-size:.65em;color:#888;transition:all .1s}
 .copy-btn:hover{border-color:#DC143C;color:#DC143C}
 .copy-btn.copied{background:#DC143C;color:#fff;border-color:#DC143C}
@@ -117,7 +121,7 @@ footer a:hover{text-decoration:underline}
 
 <header>
   <h1>Tune-Mapomatic <span>by Red Cross GIS</span></h1>
-  <p>Drop the needle on any Red Cross map resource. 750+ maps, boundaries, and services.</p>
+  <p>Drop the needle on any Red Cross map resource. 900+ maps, forecasts, and services.</p>
   <div class="search-wrap">
     <span class="search-icon">&#x1F50D;</span>
     <input type="search" id="search" placeholder="Search: 'SC chapter map', 'earthquake risk', 'FEMA REST', 'boundary GDB'..." autocomplete="off" autofocus>
@@ -536,6 +540,88 @@ function territoryResources() {
   return res;
 }
 
+function forecastResources() {
+  return [
+    {name:'NOAA Surface Observations',url:'https://www.wpc.ncep.noaa.gov/sfcobs/sfcobs.shtml',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'Active Watches/Warnings Map',url:'https://www.weather.gov/wwamap/png/US.png',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'Short Range Forecasts (Days 1-3)',url:'https://www.wpc.ncep.noaa.gov/basicwx/basicwx_wbg.php',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'Medium Range Forecasts (Days 4-7)',url:'https://www.wpc.ncep.noaa.gov/medr/medr.shtml',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'Day 3-7 U.S. Hazards Outlook',url:'https://www.wpc.ncep.noaa.gov/threats/threats.php',cat:'forecast',level:'national',src:'noaa',fmt:'web'},
+    {name:'6-10 Day Outlook',url:'https://www.cpc.ncep.noaa.gov/products/predictions/610day/',cat:'forecast',level:'national',src:'noaa',fmt:'web'},
+    {name:'8-14 Day Outlook',url:'https://www.cpc.ncep.noaa.gov/products/predictions/814day/',cat:'forecast',level:'national',src:'noaa',fmt:'web'},
+    {name:'Daily Weather Map',url:'https://www.wpc.ncep.noaa.gov/dailywxmap/index.html',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'Day 1 Convective Outlook',url:'https://www.spc.noaa.gov/products/outlook/day1otlk.html',cat:'forecast',level:'national',src:'spc',fmt:'web'},
+    {name:'Day 1 Fire Weather Outlook',url:'https://www.spc.noaa.gov/products/fire_wx/fwdy1.html',cat:'forecast',level:'national',src:'spc',fmt:'web'},
+    {name:'Day 2 Fire Weather Outlook',url:'https://www.spc.noaa.gov/products/fire_wx/fwdy2.html',cat:'forecast',level:'national',src:'spc',fmt:'web'},
+    {name:'Day 3-8 Fire Weather Outlook',url:'https://www.spc.noaa.gov/products/exper/fire_wx/',cat:'forecast',level:'national',src:'spc',fmt:'web'},
+    {name:'Thunderstorm Outlook',url:'https://www.spc.noaa.gov/products/outlook/tstmotlk.html',cat:'forecast',level:'national',src:'spc',fmt:'web'},
+    {name:'Day 1 QPF (Rainfall Forecast)',url:'https://www.wpc.ncep.noaa.gov/qpf/qpf1.shtml',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'5-Day QPF (Rainfall Forecast)',url:'https://www.wpc.ncep.noaa.gov/qpf/p120i.gif?',cat:'forecast',level:'national',src:'nws',fmt:'img'},
+    {name:'Excessive Rainfall Potential',url:'https://www.wpc.ncep.noaa.gov/qpf/excess_rain.shtml',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'Heat Index Forecast',url:'https://www.wpc.ncep.noaa.gov/heat_index.shtml',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'Winter Weather Forecasts',url:'https://www.wpc.ncep.noaa.gov/wwd/wssi/wssi.php',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'Graphical Forecasts',url:'https://graphical.weather.gov/',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'nowCOAST Data Display',url:'https://nowcoast.noaa.gov/',cat:'forecast',level:'national',src:'noaa',fmt:'web'},
+    {name:'U.S. Seasonal Drought Outlook',url:'https://www.cpc.ncep.noaa.gov/products/expert_assessment/sdo_summary.php',cat:'forecast',level:'national',src:'noaa',fmt:'web'},
+    {name:'Travelers Forecast',url:'https://www.weather.gov/safety/travel',cat:'forecast',level:'national',src:'nws',fmt:'web'}
+  ].map(r => ({...r, state:'US'}));
+}
+
+function tropicalResources() {
+  return [
+    {name:'National Hurricane Center',url:'https://www.nhc.noaa.gov/',cat:'tropical',level:'national',src:'nhc',fmt:'web'},
+    {name:'Joint Typhoon Warning Center (JTWC)',url:'https://www.metoc.navy.mil/jtwc/jtwc.html',cat:'tropical',level:'national',src:'navy',fmt:'web'},
+    {name:'Saffir-Simpson Wind Scale',url:'https://www.nhc.noaa.gov/aboutsshws.php',cat:'tropical',level:'national',src:'nhc',fmt:'web'},
+    {name:'2025 Storm Names',url:'https://www.nhc.noaa.gov/aboutnames.shtml',cat:'tropical',level:'national',src:'nhc',fmt:'web'},
+    {name:'Atlantic Tropical Outlook',url:'https://www.nhc.noaa.gov/gtwo.php?basin=atlc',cat:'tropical',level:'national',src:'nhc',fmt:'web'},
+    {name:'Atlantic 7-Day Graphical Outlook',url:'https://www.nhc.noaa.gov/xgtwo/two_atl_7d0.png',cat:'tropical',level:'national',src:'nhc',fmt:'img'},
+    {name:'Eastern Pacific Tropical Outlook',url:'https://www.nhc.noaa.gov/gtwo.php?basin=epac',cat:'tropical',level:'national',src:'nhc',fmt:'web'},
+    {name:'Eastern Pacific 7-Day Graphical Outlook',url:'https://www.nhc.noaa.gov/xgtwo/two_pac_7d0.png',cat:'tropical',level:'national',src:'nhc',fmt:'img'},
+    {name:'Central Pacific Hurricane Center',url:'https://www.nhc.noaa.gov/cpac/',cat:'tropical',level:'national',src:'nhc',fmt:'web'},
+    {name:'Atlantic Surface Analysis',url:'https://ocean.weather.gov/A_sfc_full_ocean.png',cat:'tropical',level:'national',src:'noaa',fmt:'img'},
+    {name:'Atlantic Sea Surface Temps',url:'https://www.ospo.noaa.gov/Products/ocean/sst/50km_night/index.html',cat:'tropical',level:'national',src:'noaa',fmt:'web'},
+    {name:'Gulf of Mexico SST',url:'https://www.ospo.noaa.gov/Products/ocean/sst/contour_regional/index.html',cat:'tropical',level:'national',src:'noaa',fmt:'web'},
+    {name:'Probabilistic Storm Surge',url:'https://www.nhc.noaa.gov/surge/',cat:'tropical',level:'national',src:'nhc',fmt:'web'},
+    {name:'Hurricane Season Outlook (NHC)',url:'https://www.cpc.ncep.noaa.gov/products/outlooks/hurricane.shtml',cat:'tropical',level:'national',src:'nhc',fmt:'web'},
+    {name:'Hurricane Season Outlook (CSU)',url:'https://tropical.colostate.edu/',cat:'tropical',level:'national',src:'other',fmt:'web'},
+    {name:'Atlantic Hurricane Tracking Chart',url:'https://www.nhc.noaa.gov/pdf/tracking_chart_atlantic.pdf',cat:'tropical',level:'national',src:'nhc',fmt:'pdf'},
+    {name:'East Pacific Hurricane Tracking Chart',url:'https://www.nhc.noaa.gov/pdf/tracking_chart_epac.pdf',cat:'tropical',level:'national',src:'nhc',fmt:'pdf'},
+    {name:'ARC Tropical Hazard App',url:'https://experience.arcgis.com/experience/e8ef2338d7c6440db70440e9a2f1480c',cat:'tropical',level:'national',src:'arc',fmt:'web'},
+    {name:'NHC Tropical Cyclone Model Output',url:'https://tropical.colostate.edu/tc-models/',cat:'tropical',level:'national',src:'other',fmt:'web'},
+    {name:'Two-Week Global Tropics Hazards',url:'https://www.cpc.ncep.noaa.gov/products/precip/CWlink/ghazards/',cat:'tropical',level:'national',src:'noaa',fmt:'web'}
+  ].map(r => ({...r, state:'US'}));
+}
+
+function monitoringResources() {
+  return [
+    {name:'GOES East Satellite',url:'https://www.star.nesdis.noaa.gov/goes/conus.php?sat=G16',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'GOES West Satellite',url:'https://www.star.nesdis.noaa.gov/goes/conus.php?sat=G18',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'NWS RADAR',url:'https://radar.weather.gov/',cat:'monitoring',level:'national',src:'nws',fmt:'web'},
+    {name:'USGS Recent Earthquakes',url:'https://earthquake.usgs.gov/earthquakes/map/',cat:'monitoring',level:'national',src:'usgs',fmt:'web'},
+    {name:'USGS "Did You Feel It?"',url:'https://earthquake.usgs.gov/data/dyfi/',cat:'monitoring',level:'national',src:'usgs',fmt:'web'},
+    {name:'USGS PAGER',url:'https://earthquake.usgs.gov/data/pager/',cat:'monitoring',level:'national',src:'usgs',fmt:'web'},
+    {name:'National Tsunami Warning Center',url:'https://tsunami.gov/',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'Significant River Flood Outlook',url:'https://www.wpc.ncep.noaa.gov/nationalfloodoutlook/',cat:'monitoring',level:'national',src:'nws',fmt:'web'},
+    {name:'Advanced Hydrologic Prediction (AHPS)',url:'https://water.weather.gov/ahps/',cat:'monitoring',level:'national',src:'nws',fmt:'web'},
+    {name:'USGS Real-Time Water Data',url:'https://waterdata.usgs.gov/nwis/rt',cat:'monitoring',level:'national',src:'usgs',fmt:'web'},
+    {name:'USGS Flood/High Flow Conditions',url:'https://waterwatch.usgs.gov/',cat:'monitoring',level:'national',src:'usgs',fmt:'web'},
+    {name:'CoCoRaHS Rain Network',url:'https://www.cocorahs.org/',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'U.S. Drought Monitor',url:'https://droughtmonitor.unl.edu/',cat:'monitoring',level:'national',src:'usda',fmt:'web'},
+    {name:'NIFC (National Interagency Fire Center)',url:'https://www.nifc.gov/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'InciWeb (Active Incidents)',url:'https://inciweb.wildfire.gov/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'Fire & Smoke Map',url:'https://fire.airnow.gov/',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'AirNow Air Quality',url:'https://www.airnow.gov/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'USGS Volcano Hazards Program',url:'https://www.usgs.gov/programs/VHP',cat:'monitoring',level:'national',src:'usgs',fmt:'web'},
+    {name:'National Snow Analysis',url:'https://www.nohrsc.noaa.gov/interactive/html/map.html',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'NOAA Weather & Hazards Viewer',url:'https://www.wrh.noaa.gov/map/',cat:'monitoring',level:'national',src:'nws',fmt:'web'},
+    {name:'ARC Weather/Hazard Web App',url:'https://experience.arcgis.com/experience/de69e0e7ba3e43b4860f76ebeb84b267',cat:'monitoring',level:'national',src:'arc',fmt:'web'},
+    {name:'ARC Weather/Hazard Web Map',url:'https://arc-nhq-gis.maps.arcgis.com/apps/webappviewer/index.html?id=1e5c66e4f3a04e0fac0b2fd4b1c5e5f1',cat:'monitoring',level:'national',src:'arc',fmt:'web'},
+    {name:'Storm Prediction Center (SPC)',url:'https://www.spc.noaa.gov/',cat:'monitoring',level:'national',src:'spc',fmt:'web'},
+    {name:'Daily Rainfall Accumulation',url:'https://www.wpc.ncep.noaa.gov/qpf/obsmaps/obsprecip.shtml',cat:'monitoring',level:'national',src:'nws',fmt:'web'},
+    {name:'Seismic Monitor (IRIS)',url:'https://ds.iris.edu/seismon/',cat:'monitoring',level:'national',src:'other',fmt:'web'}
+  ].map(r => ({...r, state:'US'}));
+}
+
 function getAllResources() {
   let all = [];
 
@@ -584,6 +670,15 @@ function getAllResources() {
 
   // Territory resources
   all = all.concat(territoryResources());
+
+  // Forecast resources
+  all = all.concat(forecastResources());
+
+  // Tropical resources
+  all = all.concat(tropicalResources());
+
+  // Monitoring resources
+  all = all.concat(monitoringResources());
 
   // Presidential declarations
   ['CONUS','Region 1','Region 2','Region 3','Region 4','Region 5',
@@ -662,8 +757,8 @@ function filterResources() {
 // UI RENDERING
 // ======================================================================
 const LEVEL_LABELS = {county:'County',chapter:'Chapter',region:'Region',division:'Division',state:'State',national:'National'};
-const TYPE_LABELS = {'chapter-map':'Chapter Maps','region-map':'Region Maps','district-map':'District Maps','state-map':'State Maps','reference':'Reference','demographics':'Demographics','weather':'Weather','evacuation':'Evacuation','boundary-data':'Boundary Data','national-atlas':'National Atlas','hazard':'Hazards','partner-service':'Services','declarations':'Declarations'};
-const SOURCE_LABELS = {arc:'Red Cross',fema:'FEMA',nws:'NWS',usgs:'USGS',census:'Census',esri:'Esri',noaa:'NOAA',other:'Other'};
+const TYPE_LABELS = {'chapter-map':'Chapter Maps','region-map':'Region Maps','district-map':'District Maps','state-map':'State Maps','reference':'Reference','demographics':'Demographics','weather':'Weather','evacuation':'Evacuation','boundary-data':'Boundary Data','national-atlas':'National Atlas','hazard':'Hazards','forecast':'Forecasts','tropical':'Tropical','monitoring':'Monitoring','partner-service':'Services','declarations':'Declarations'};
+const SOURCE_LABELS = {arc:'Red Cross',fema:'FEMA',nws:'NWS',usgs:'USGS',census:'Census',esri:'Esri',noaa:'NOAA',spc:'SPC',nhc:'NHC',navy:'Navy',usda:'USDA',other:'Other'};
 const FORMAT_LABELS = {pdf:'PDF',gdb:'GDB',xlsx:'Excel',web:'Web',rest:'REST',shp:'Shapefile',img:'Image'};
 
 function renderMap() {
@@ -782,7 +877,7 @@ function renderResults(results) {
   });
 
   // Category display order
-  const catOrder = ['chapter-map','region-map','district-map','boundary-data','national-atlas','state-map','evacuation','hazard','weather','demographics','reference','partner-service','declarations'];
+  const catOrder = ['chapter-map','region-map','district-map','boundary-data','national-atlas','state-map','evacuation','hazard','forecast','tropical','monitoring','weather','demographics','reference','partner-service','declarations'];
   const sortedCats = Object.keys(grouped).sort((a,b) => {
     const ai = catOrder.indexOf(a); const bi = catOrder.indexOf(b);
     return (ai===-1?99:ai) - (bi===-1?99:bi);

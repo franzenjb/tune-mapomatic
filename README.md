@@ -2,15 +2,15 @@
 
 **Drop the needle on any Red Cross map resource.**
 
-A fast, searchable interface for 844+ American Red Cross map resources, boundary data, GIS services, and hazard maps. Replaces scrolling through the 500+ link [ARC Map Catalog](https://maps.redcross.org/website/maps/ARC_Map_Links.html).
+A fast, searchable interface for 900+ American Red Cross map resources, forecasts, hazard maps, and GIS services. Replaces scrolling through the 500+ link [ARC Map Catalog](https://maps.redcross.org/website/maps/ARC_Map_Links.html).
 
 ## Features
 
-- **Instant Search** - Fuzzy search across all resources: "SC chapter", "earthquake risk", "FEMA REST"
+- **Instant Search** - Fuzzy search across all resources: "SC chapter", "earthquake risk", "FEMA REST", "hurricane"
 - **Clickable US Map** - Tile grid map, click any state to see its resources
 - **Region Highlighting** - Selecting a state highlights its ARC region partners
 - **Filter Chips** - Filter by level (Chapter/Region/Division), type, source, format
-- **844 Resources** - All 50 states, DC, 5 territories, national atlas, hazard maps, partner services
+- **900+ Resources** - All 50 states, DC, 5 territories, national atlas, hazard maps, forecasts, tropical, monitoring, partner services
 - **Copy URL** - One-click URL copy for any resource
 - **Zero Dependencies** - Single HTML file, no build step, no external libraries
 
@@ -24,6 +24,9 @@ A fast, searchable interface for 844+ American Red Cross map resources, boundary
 | Boundary Data | 8 | 2026 geodatabases (GDB) and alignment spreadsheets |
 | National Atlas | 34 | Division/region/chapter wall maps |
 | Hazard Maps | 22 | Earthquake, flood, hurricane, tornado, wildfire, tsunami, volcano |
+| Forecasts | 22 | SPC outlooks, WPC rainfall/heat/winter, graphical forecasts |
+| Tropical | 20 | NHC outlooks, JTWC, storm surge, tracking charts, SST |
+| Monitoring | 25 | GOES satellite, RADAR, USGS earthquakes, drought, fire, air quality |
 | Partner Services | 25 | FEMA, NWS, USGS, Census REST endpoints |
 | Evacuation Maps | 12 | Coastal state storm surge/evacuation |
 
