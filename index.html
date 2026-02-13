@@ -132,11 +132,13 @@ footer a:hover{text-decoration:underline}
 .lookup-meta{font-size:.68em;color:#999;margin:6px 0 4px;display:flex;justify-content:space-between;align-items:center}
 .lookup-meta button{font-size:1em;color:#DC143C;background:none;border:none;cursor:pointer;font-weight:600;padding:0}
 .lookup-meta button:hover{text-decoration:underline}
-.lookup-results{max-height:340px;overflow:auto;border:1px solid #eee;border-radius:4px}
-.lookup-results table{width:100%;border-collapse:collapse;font-size:.68em}
-.lookup-results th{position:sticky;top:0;background:#f5f5f5;text-align:left;padding:4px 6px;font-weight:700;color:#666;border-bottom:1px solid #ddd}
-.lookup-results td{padding:3px 6px;border-bottom:1px solid #f0f0f0}
-.lookup-results tr:hover td{background:#fdf0f2}
+.lookup-results{max-height:400px;overflow:auto;border:1px solid #eee;border-radius:4px}
+.lookup-card{padding:8px 10px;border-bottom:1px solid #eee;font-size:.72em;line-height:1.5}
+.lookup-card:last-child{border-bottom:none}
+.lookup-card:hover{background:#fdf0f2}
+.lookup-card .lk-county{font-weight:700;color:#1a1a1a}
+.lookup-card .lk-chapter{color:#555}
+.lookup-card .lk-codes{color:#888;font-size:.9em;font-family:monospace}
 
 /* LOADING */
 .skeleton{background:linear-gradient(90deg,#e8e8e8 25%,#f0f0f0 50%,#e8e8e8 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;height:40px;border-radius:5px;margin-bottom:4px}
@@ -1234,12 +1236,14 @@ function searchLookup(query){
   meta.style.display='flex';
   countEl.textContent=total>20?`${total} results (showing 20)`:`${total} result${total!==1?'s':''}`;
 
-  let html='<table><tr><th>County</th><th>ST</th><th>FIPS</th><th class="lk-name">Chapter</th><th>ECODE</th><th>RCODE</th><th>DCODE</th></tr>';
+  let html='';
   capped.forEach(c=>{
     const ch=LK_CHAPTERS[c.e]||{};
-    html+=`<tr><td>${c.c}</td><td>${c.s}</td><td>${c.f}</td><td class="lk-name">${ch.n||'—'}</td><td>${c.e}</td><td>${ch.rc||'—'}</td><td>${ch.dc||'—'}</td></tr>`;
+    html+=`<div class="lookup-card">
+      <div class="lk-county">${c.c}, ${c.s} &nbsp;<span class="lk-codes">${c.f}</span></div>
+      <div class="lk-chapter">${ch.n||'—'} &nbsp;<span class="lk-codes">${c.e} / ${ch.rc||'—'} / ${ch.dc||'—'}</span></div>
+    </div>`;
   });
-  html+='</table>';
   el.innerHTML=html;
 }
 
