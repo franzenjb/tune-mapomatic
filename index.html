@@ -450,6 +450,92 @@ function stateResources(code) {
   return res;
 }
 
+function territoryResources() {
+  const res = [];
+
+  // === PUERTO RICO ===
+  const prB = `${BASE}/website/Maps/Images/PuertoRico`;
+  res.push({name:'Puerto Rico Region Map',url:`${prB}/RCPR_REG.pdf`,state:'PR',cat:'region-map',level:'region',src:'arc',fmt:'pdf'});
+  res.push({name:'Puerto Rico Region Map by County',url:`${prB}/RCPR_REG_CO.pdf`,state:'PR',cat:'region-map',level:'county',src:'arc',fmt:'pdf'});
+  res.push({name:'Puerto Rico ARC Geography Shapefile',url:`${prB}/PR.zip`,state:'PR',cat:'boundary-data',level:'state',src:'arc',fmt:'shp'});
+  res.push({name:'Puerto Rico State Map',url:`${prB}/pagecnty_pr2.pdf`,state:'PR',cat:'state-map',level:'state',src:'other',fmt:'pdf'});
+  res.push({name:'Puerto Rico State Map w/ Places',url:`${prB}/pagecnty_pr3.pdf`,state:'PR',cat:'state-map',level:'state',src:'other',fmt:'pdf'});
+  res.push({name:'Puerto Rico FIPS Code Map',url:`${prB}/pr_cnty.pdf`,state:'PR',cat:'reference',level:'county',src:'census',fmt:'pdf'});
+  res.push({name:'Puerto Rico Population (English)',url:`${prB}/PR_Census2K_Profile_eng.pdf`,state:'PR',cat:'demographics',level:'state',src:'census',fmt:'pdf'});
+  res.push({name:'Puerto Rico Population (Spanish)',url:`${prB}/PR_Census2K_Profile_sp.pdf`,state:'PR',cat:'demographics',level:'state',src:'census',fmt:'pdf'});
+  res.push({name:'San Juan Map',url:`${prB}/PuertoRico_SanJuan.gif`,state:'PR',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Puerto Rico Roads',url:`${prB}/puertorico_roads.jpg`,state:'PR',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Puerto Rico Towns',url:`${prB}/puertorico_towns.jpg`,state:'PR',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Puerto Rico Federal Lands',url:`${prB}/prvi.pdf`,state:'PR',cat:'reference',level:'state',src:'other',fmt:'pdf'});
+  res.push({name:'Puerto Rico Hydrology',url:`${prB}/pagehyd_pr4.pdf`,state:'PR',cat:'reference',level:'state',src:'usgs',fmt:'pdf'});
+  res.push({name:'Puerto Rico Physical Features',url:`${prB}/pagegen_prvi.pdf`,state:'PR',cat:'reference',level:'state',src:'usgs',fmt:'pdf'});
+  res.push({name:'Puerto Rico Congressional Districts',url:`${prB}/PR01_109.pdf`,state:'PR',cat:'reference',level:'state',src:'other',fmt:'pdf'});
+
+  // === U.S. VIRGIN ISLANDS ===
+  const viB = `${BASE}/website/Maps/Images/USVI`;
+  res.push({name:'USVI Region Map',url:`${viB}/RCFL_REG.pdf`,state:'VI',cat:'region-map',level:'region',src:'arc',fmt:'pdf'});
+  res.push({name:'USVI Region Map by County',url:`${viB}/RCFL_REG_CO.pdf`,state:'VI',cat:'region-map',level:'county',src:'arc',fmt:'pdf'});
+  res.push({name:'USVI District Map (10R28)',url:`${viB}/10R28.pdf`,state:'VI',cat:'district-map',level:'chapter',src:'arc',fmt:'pdf'});
+  res.push({name:'USVI Overview Map',url:`${viB}/USVI.gif`,state:'VI',cat:'state-map',level:'state',src:'other',fmt:'img'});
+  res.push({name:'USVI Topo Map',url:`${viB}/USVI_Topo.gif`,state:'VI',cat:'state-map',level:'state',src:'other',fmt:'img'});
+  res.push({name:'St. Thomas Roads',url:`${viB}/StThomas.gif`,state:'VI',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Charlotte Amalie (St. Thomas)',url:`${viB}/CAM.gif`,state:'VI',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'St. John Map',url:`${viB}/StJohn.gif`,state:'VI',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Cruz Bay (St. John)',url:`${viB}/CZBM.gif`,state:'VI',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'St. Croix Map',url:`${viB}/StCroix.gif`,state:'VI',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'St. Croix Roads',url:`${viB}/StCroix_Roads.gif`,state:'VI',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Christiansted (St. Croix)',url:`${viB}/CSM.gif`,state:'VI',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Frederiksted (St. Croix)',url:`${viB}/FSM.gif`,state:'VI',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'USVI Federal Lands',url:`${viB}/prvi.pdf`,state:'VI',cat:'reference',level:'state',src:'other',fmt:'pdf'});
+  res.push({name:'USVI Physical Features',url:`${viB}/pagegen_prvi.pdf`,state:'VI',cat:'reference',level:'state',src:'usgs',fmt:'pdf'});
+  res.push({name:'USVI Congressional Districts',url:`${viB}/VI01_109.pdf`,state:'VI',cat:'reference',level:'state',src:'other',fmt:'pdf'});
+
+  // === GUAM ===
+  const guB = `${BASE}/website/Maps/Images/Guam`;
+  res.push({name:'Guam Region Map',url:`${guB}/RCHIGUMPAS_REG.pdf`,state:'GU',cat:'region-map',level:'region',src:'arc',fmt:'pdf'});
+  res.push({name:'Guam Region Map by County',url:`${guB}/RCHIGUMPAS_REG_CO.pdf`,state:'GU',cat:'region-map',level:'county',src:'arc',fmt:'pdf'});
+  res.push({name:'Guam Political Map',url:`${guB}/Guam.gif`,state:'GU',cat:'state-map',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Guam Topo Map',url:`${guB}/guam.jpg`,state:'GU',cat:'state-map',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Guam Language Map',url:`${guB}/census_language_guam.jpg`,state:'GU',cat:'demographics',level:'state',src:'census',fmt:'img'});
+  res.push({name:'Guam Population Map',url:`${guB}/census_population_guam.jpg`,state:'GU',cat:'demographics',level:'state',src:'census',fmt:'img'});
+  res.push({name:'Tumon Map (Guam)',url:`${guB}/Tumon.jpg`,state:'GU',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Guam FIPS Code Map',url:`${guB}/guam_cnty.pdf`,state:'GU',cat:'reference',level:'county',src:'census',fmt:'pdf'});
+  res.push({name:'Guam Disaster Links',url:`${BASE}/website/links/ARC_Disaster_Links_GU.html`,state:'GU',cat:'reference',level:'state',src:'arc',fmt:'web'});
+
+  // === AMERICAN SAMOA ===
+  const asB = `${BASE}/website/Maps/Images/Samoa`;
+  res.push({name:'American Samoa Region Map',url:`${asB}/RCHIGUMPAS_REG.pdf`,state:'AS',cat:'region-map',level:'region',src:'arc',fmt:'pdf'});
+  res.push({name:'American Samoa Region Map by County',url:`${asB}/RCHIGUMPAS_REG_CO.pdf`,state:'AS',cat:'region-map',level:'county',src:'arc',fmt:'pdf'});
+  res.push({name:'American Samoa Overview',url:`${asB}/amsamap1.gif`,state:'AS',cat:'state-map',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Tutuila Island (1970)',url:`${asB}/Tutuila_Island_1970.jpg`,state:'AS',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Tutuila Roads',url:`${asB}/Tutuila_97.jpg`,state:'AS',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Tutuila Topo',url:`${asB}/tutuila_topo.jpg`,state:'AS',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Manua Islands',url:`${asB}/manuaislands.jpg`,state:'AS',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Ofu Island',url:`${asB}/map_ofu_big.gif`,state:'AS',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:"Ta'u Island",url:`${asB}/map_tau_big.gif`,state:'AS',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Pago Pago Topo',url:`${asB}/PagoPago_Topo.jpg`,state:'AS',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'American Samoa FIPS Code Map',url:`${asB}/samoa_cnty.pdf`,state:'AS',cat:'reference',level:'county',src:'census',fmt:'pdf'});
+  res.push({name:'American Samoa Disaster Links',url:`${BASE}/website/links/ARC_Disaster_Links_AS.html`,state:'AS',cat:'reference',level:'state',src:'arc',fmt:'web'});
+
+  // === CNMI ===
+  const mpB = `${BASE}/website/Maps/Images/CNMI`;
+  res.push({name:'CNMI Region Map',url:`${mpB}/RCHIGUMPAS_REG.pdf`,state:'MP',cat:'region-map',level:'region',src:'arc',fmt:'pdf'});
+  res.push({name:'CNMI Region Map by County',url:`${mpB}/RCHIGUMPAS_REG_CO.pdf`,state:'MP',cat:'region-map',level:'county',src:'arc',fmt:'pdf'});
+  res.push({name:'Saipan Roads',url:`${mpB}/cnmiroads.jpg`,state:'MP',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Saipan Topo',url:`${mpB}/cnmitopo.jpg`,state:'MP',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Saipan Geology',url:`${mpB}/cnmigeology.jpg`,state:'MP',cat:'reference',level:'state',src:'usgs',fmt:'img'});
+  res.push({name:'Saipan Watersheds',url:`${mpB}/cnmiwtrshed.jpg`,state:'MP',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Saipan Soils',url:`${mpB}/cnmisoils.jpg`,state:'MP',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Saipan Slope',url:`${mpB}/cnmislope.jpg`,state:'MP',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Saipan Faults/Streams/Inland Waters',url:`${mpB}/cnmifstrminl.jpg`,state:'MP',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Saipan Public Lands',url:`${mpB}/cnmipublhome.jpg`,state:'MP',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'Saipan Sewer/Power Lines',url:`${mpB}/cnmisewrpowr.jpg`,state:'MP',cat:'reference',level:'state',src:'other',fmt:'img'});
+  res.push({name:'CNMI FIPS Code Map',url:`${mpB}/guam_cnty.pdf`,state:'MP',cat:'reference',level:'county',src:'census',fmt:'pdf'});
+  res.push({name:'CNMI Disaster Links',url:`${BASE}/website/links/ARC_Disaster_Links_MP.html`,state:'MP',cat:'reference',level:'state',src:'arc',fmt:'web'});
+
+  return res;
+}
+
 function getAllResources() {
   let all = [];
 
@@ -496,6 +582,9 @@ function getAllResources() {
     });
   });
 
+  // Territory resources
+  all = all.concat(territoryResources());
+
   // Presidential declarations
   ['CONUS','Region 1','Region 2','Region 3','Region 4','Region 5',
    'Region 6','Region 7','Region 8','Region 9','Region 10'].forEach((r,i) => {
@@ -531,7 +620,7 @@ function searchScore(resource, query) {
   const src = (resource.src||'').toLowerCase();
   const fmt = (resource.fmt||'').toLowerCase();
   const hazard = (resource.hazardType||'').toLowerCase();
-  const stateName = resource.state && STATES[resource.state] ? STATES[resource.state].name.toLowerCase() : '';
+  const stateName = resource.state && (STATES[resource.state]||TERRITORIES[resource.state]) ? (STATES[resource.state]||TERRITORIES[resource.state]).name.toLowerCase() : '';
   const searchable = `${name} ${state} ${stateName} ${cat} ${src} ${fmt} ${hazard}`;
 
   let score = 0;
@@ -669,7 +758,8 @@ function renderResults(results) {
 
   // Title
   if (activeState) {
-    const sName = STATES[activeState]?.name || TERRITORIES[activeState]?.name || activeState;
+    const sObj = STATES[activeState] || TERRITORIES[activeState];
+    const sName = sObj?.name || activeState;
     titleEl.textContent = sName;
   } else {
     titleEl.textContent = document.getElementById('search').value.trim() ? 'Search Results' : 'All Resources';
