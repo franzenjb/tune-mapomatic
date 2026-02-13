@@ -11,8 +11,9 @@ A fast, searchable interface for 1,000+ American Red Cross map resources, foreca
 - **Region Highlighting** - Selecting a state highlights its ARC region partners
 - **Filter Chips** - Filter by level (Chapter/Region/Division), type, source, format
 - **1,000+ Resources** - All 50 states, DC, 5 territories, national atlas, hazard maps, forecasts, tropical, monitoring, partner services
+- **Code Lookup** - Search 3,240 counties by name, FIPS, chapter, ECODE, RCODE, or DCODE (ARC FY2026 geography)
 - **Copy URL** - One-click URL copy for any resource
-- **Zero Dependencies** - Single HTML file, no build step, no external libraries
+- **Zero Dependencies** - Single HTML file + one data file, no build step, no external libraries
 
 ## Resources Included
 

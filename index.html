@@ -59,12 +59,12 @@ header p{font-size:.85em;opacity:.8;margin-bottom:12px;font-weight:300}
 
 /* FILTERS */
 .filter-bar{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.filter-row{display:flex;align-items:center;gap:6px}
+.filter-row{display:flex;flex-direction:column;gap:4px}
 .chip{padding:5px 0;border:1px solid #ccc;border-radius:4px;font-size:.72em;cursor:pointer;background:#fff;color:#555;transition:all .12s;font-weight:500;text-align:center;width:100%}
 .chip:hover{border-color:#DC143C;color:#DC143C}
 .chip.active{background:#DC143C;color:#fff;border-color:#DC143C}
 .chip-group{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:4px;flex:1}
-.chip-label{font-size:.65em;text-transform:uppercase;color:#999;font-weight:700;letter-spacing:.5px;width:56px;flex-shrink:0;text-align:right}
+.chip-label{font-size:.65em;text-transform:uppercase;color:#999;font-weight:700;letter-spacing:.5px}
 .clear-btn{font-size:.7em;color:#DC143C;cursor:pointer;padding:4px 8px;border:none;background:none;font-weight:600;align-self:flex-end}
 .clear-btn:hover{text-decoration:underline}
 
@@ -112,6 +112,25 @@ footer{text-align:center;padding:20px;font-size:.75em;color:#999;margin-top:20px
 footer a{color:#DC143C;text-decoration:none}
 footer a:hover{text-decoration:underline}
 
+/* CODE LOOKUP */
+.lookup-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.lookup-toggle h3{margin:0}
+.lookup-arrow{font-size:.7em;color:#999;transition:transform .2s}
+.lookup-arrow.open{transform:rotate(180deg)}
+.lookup-body{display:none;margin-top:10px}
+.lookup-body.open{display:block}
+.lookup-input{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:4px;font-size:.82em;outline:none;box-sizing:border-box}
+.lookup-input:focus{border-color:#DC143C;box-shadow:0 0 0 2px rgba(220,20,60,.12)}
+.lookup-meta{font-size:.68em;color:#999;margin:6px 0 4px;display:flex;justify-content:space-between;align-items:center}
+.lookup-meta button{font-size:1em;color:#DC143C;background:none;border:none;cursor:pointer;font-weight:600;padding:0}
+.lookup-meta button:hover{text-decoration:underline}
+.lookup-results{max-height:340px;overflow:auto;border:1px solid #eee;border-radius:4px}
+.lookup-results table{width:100%;border-collapse:collapse;font-size:.68em}
+.lookup-results th{position:sticky;top:0;background:#f5f5f5;text-align:left;padding:4px 6px;font-weight:700;color:#666;border-bottom:1px solid #ddd;white-space:nowrap}
+.lookup-results td{padding:3px 6px;border-bottom:1px solid #f0f0f0;white-space:nowrap}
+.lookup-results tr:hover td{background:#fdf0f2}
+.lookup-results .lk-name{white-space:normal;min-width:100px}
+
 /* LOADING */
 .skeleton{background:linear-gradient(90deg,#e8e8e8 25%,#f0f0f0 50%,#e8e8e8 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;height:40px;border-radius:5px;margin-bottom:4px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -148,6 +167,20 @@ footer a:hover{text-decoration:underline}
       <div class="download-item"><span class="fmt-badge fmt-web">WEB</span><a href="https://maps.redcross.org/website/Services/ARC_Services.html" target="_blank">Map Services Catalog</a></div>
       <div class="download-item"><span class="fmt-badge fmt-web">WEB</span><a href="https://maps.redcross.org/website/Weather/ARC_Weather.html" target="_blank">Weather & Hazard Center</a></div>
       <div class="download-item"><span class="fmt-badge fmt-web">WEB</span><a href="https://maps.redcross.org/website/Tropical/ARC_Tropical_Links.html" target="_blank">Tropical Hazard Center</a></div>
+    </div>
+    <div class="panel">
+      <div class="lookup-toggle" onclick="toggleLookup()">
+        <h3>Code Lookup</h3>
+        <span class="lookup-arrow" id="lookup-arrow">&#9660;</span>
+      </div>
+      <div class="lookup-body" id="lookup-body">
+        <input type="text" class="lookup-input" id="lookup-input" placeholder="County, FIPS, chapter, ECODE, RCODE, DCODE..." autocomplete="off">
+        <div class="lookup-meta" id="lookup-meta" style="display:none">
+          <span id="lookup-count"></span>
+          <button onclick="clearLookup()">Reset</button>
+        </div>
+        <div class="lookup-results" id="lookup-results"></div>
+      </div>
     </div>
   </div>
 
@@ -1122,6 +1155,94 @@ function init() {
 }
 
 init();
+</script>
+<script src="code_lookup.js"></script>
+<script>
+// ======================================================================
+// CODE LOOKUP
+// ======================================================================
+function toggleLookup(){
+  const body=document.getElementById('lookup-body');
+  const arrow=document.getElementById('lookup-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function clearLookup(){
+  document.getElementById('lookup-input').value='';
+  document.getElementById('lookup-results').innerHTML='';
+  document.getElementById('lookup-meta').style.display='none';
+}
+
+function searchLookup(query){
+  const el=document.getElementById('lookup-results');
+  const meta=document.getElementById('lookup-meta');
+  const countEl=document.getElementById('lookup-count');
+  if(!query||query.length<2){el.innerHTML='';meta.style.display='none';return}
+  const q=query.toLowerCase().trim();
+  let matches=[];
+
+  // Check if query looks like a code
+  const isCode=/^[0-9]{5}$/.test(q); // FIPS
+  const isEcode=/^[0-9]{4,5}$/.test(q)&&!isCode; // ECODE (4-5 digit but not 5-digit FIPS pattern)
+  const isRcode=/^[0-9]{2}r[0-9]{2}$/i.test(q); // RCODE like 43R28
+  const isDcode=/^d[0-9]{2}$/i.test(q); // DCODE like D22
+
+  if(isCode){
+    // Exact FIPS match
+    matches=LK_COUNTIES.filter(c=>c.f===q);
+  } else if(isRcode){
+    // All counties in a region
+    const rc=q.toUpperCase();
+    const ecodes=Object.keys(LK_CHAPTERS).filter(e=>LK_CHAPTERS[e].rc===rc);
+    matches=LK_COUNTIES.filter(c=>ecodes.includes(c.e));
+  } else if(isDcode){
+    // All counties in a division
+    const dc=q.toUpperCase();
+    const ecodes=Object.keys(LK_CHAPTERS).filter(e=>LK_CHAPTERS[e].dc===dc);
+    matches=LK_COUNTIES.filter(c=>ecodes.includes(c.e));
+  } else if(isEcode){
+    // Exact ECODE match
+    matches=LK_COUNTIES.filter(c=>c.e===q);
+  } else {
+    // Fuzzy text search on county name, state, chapter name, region, division
+    matches=LK_COUNTIES.filter(c=>{
+      const ch=LK_CHAPTERS[c.e]||{};
+      const hay=(c.c+' '+c.s+' '+(ch.n||'')+' '+(ch.r||'')+' '+(ch.d||'')).toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  // Cap at 20
+  const total=matches.length;
+  const capped=matches.slice(0,20);
+
+  if(total===0){
+    el.innerHTML='<div style="padding:10px;text-align:center;color:#999;font-size:.78em">No matches</div>';
+    meta.style.display='flex';
+    countEl.textContent='0 results';
+    return;
+  }
+
+  meta.style.display='flex';
+  countEl.textContent=total>20?`${total} results (showing 20)`:`${total} result${total!==1?'s':''}`;
+
+  let html='<table><tr><th>County</th><th>ST</th><th>FIPS</th><th class="lk-name">Chapter</th><th>ECODE</th><th>RCODE</th><th>DCODE</th></tr>';
+  capped.forEach(c=>{
+    const ch=LK_CHAPTERS[c.e]||{};
+    html+=`<tr><td>${c.c}</td><td>${c.s}</td><td>${c.f}</td><td class="lk-name">${ch.n||'—'}</td><td>${c.e}</td><td>${ch.rc||'—'}</td><td>${ch.dc||'—'}</td></tr>`;
+  });
+  html+='</table>';
+  el.innerHTML=html;
+}
+
+(function(){
+  let t;
+  document.getElementById('lookup-input').addEventListener('input',function(){
+    clearTimeout(t);
+    t=setTimeout(()=>searchLookup(this.value),150);
+  });
+})();
 </script>
 </body>
 </html>
