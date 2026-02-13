@@ -13,12 +13,15 @@ header{background:#DC143C;color:#fff;padding:20px 24px 16px;text-align:center;po
 header h1{font-size:1.6em;font-weight:700;letter-spacing:-.5px;margin-bottom:2px}
 header h1 span{font-weight:300;opacity:.85;font-size:.7em;margin-left:6px}
 header p{font-size:.85em;opacity:.8;margin-bottom:12px;font-weight:300}
-.search-wrap{max-width:640px;margin:0 auto;position:relative}
-#search{width:100%;padding:11px 16px 11px 40px;border:none;border-radius:6px;font-size:1em;background:rgba(255,255,255,.95);color:#1a1a1a;outline:none;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.header-feedback{position:absolute;top:8px;right:16px;font-size:.65em;opacity:.7;font-weight:300}
+.header-feedback a{color:#fff;text-decoration:underline}
+.header-feedback a:hover{opacity:1}
+.search-wrap{max-width:640px;margin:0 auto;position:relative;display:flex;align-items:center;gap:10px}
+#search{flex:1;padding:11px 16px 11px 40px;border:none;border-radius:6px;font-size:1em;background:rgba(255,255,255,.95);color:#1a1a1a;outline:none;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 #search:focus{background:#fff;box-shadow:0 2px 16px rgba(0,0,0,.15)}
 #search::placeholder{color:#888}
 .search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#999;font-size:1.1em;pointer-events:none}
-#result-count{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.75em;color:#666;background:#e8e8e8;padding:2px 8px;border-radius:10px}
+#result-count{font-size:.7em;color:rgba(255,255,255,.85);white-space:nowrap;font-weight:300}
 
 /* LAYOUT */
 .app{max-width:1400px;margin:0 auto;padding:16px;display:grid;grid-template-columns:340px 1fr;gap:16px}
@@ -154,6 +157,7 @@ footer a:hover{text-decoration:underline}
 <body>
 
 <header>
+  <div class="header-feedback">Comments &amp; suggestions: <a href="mailto:jeff.franzen2@redcross.org">jeff.franzen2@redcross.org</a></div>
   <h1>Tune-Mapomatic <span>by Red Cross GIS</span></h1>
   <p>Drop the needle on any Red Cross map resource. 900+ maps, forecasts, and services.</p>
   <div class="search-wrap">
@@ -999,7 +1003,7 @@ function renderResults(results) {
   }
 
   infoEl.textContent = `${results.length} resource${results.length!==1?'s':''}`;
-  countEl.textContent = results.length;
+  countEl.textContent = `${results.length} resources`;
 
   if (results.length === 0) {
     el.innerHTML = '<div class="empty-state"><div class="big">No matches</div><p>Try a different search or clear your filters</p></div>';
