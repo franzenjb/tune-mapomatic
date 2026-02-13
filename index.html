@@ -60,11 +60,19 @@ header p{font-size:.85em;opacity:.8;margin-bottom:12px;font-weight:300}
 /* FILTERS */
 .filter-bar{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
 .filter-row{display:flex;flex-direction:column;gap:4px}
-.chip{padding:5px 0;border:1px solid #ccc;border-radius:4px;font-size:.72em;cursor:pointer;background:#fff;color:#555;transition:all .12s;font-weight:500;text-align:center;width:100%}
-.chip:hover{border-color:#DC143C;color:#DC143C}
-.chip.active{background:#DC143C;color:#fff;border-color:#DC143C}
+.chip{padding:5px 0;border:2px solid transparent;border-radius:4px;font-size:.72em;cursor:pointer;color:#fff;font-weight:700;transition:all .12s;text-align:center;width:100%}
+.chip:hover{opacity:.85;transform:scale(1.03)}
+.chip.active{box-shadow:0 0 0 2px #fff,0 0 0 4px currentColor;transform:scale(1.05)}
+.chip[data-group="level"]{background:#DC143C;border-color:#DC143C}
+.chip[data-group="type"]{background:#1a5276;border-color:#1a5276}
+.chip[data-group="source"]{background:#1e8449;border-color:#1e8449}
+.chip[data-group="format"]{background:#6c3483;border-color:#6c3483}
 .chip-group{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:4px;flex:1}
-.chip-label{font-size:.65em;text-transform:uppercase;color:#999;font-weight:700;letter-spacing:.5px}
+.chip-label{font-size:.65em;text-transform:uppercase;font-weight:700;letter-spacing:.5px}
+.chip-label-level{color:#DC143C}
+.chip-label-type{color:#1a5276}
+.chip-label-source{color:#1e8449}
+.chip-label-format{color:#6c3483}
 .clear-btn{font-size:.7em;color:#DC143C;cursor:pointer;padding:4px 8px;border:none;background:none;font-weight:600;align-self:flex-end}
 .clear-btn:hover{text-decoration:underline}
 
@@ -187,10 +195,10 @@ footer a:hover{text-decoration:underline}
   <div class="results-panel">
     <div class="panel" style="position:sticky;top:88px;z-index:10">
       <div class="filter-bar" id="filter-bar">
-        <div class="filter-row"><span class="chip-label">Level:</span><div class="chip-group" id="level-filters"></div></div>
-        <div class="filter-row"><span class="chip-label">Type:</span><div class="chip-group" id="type-filters"></div></div>
-        <div class="filter-row"><span class="chip-label">Source:</span><div class="chip-group" id="source-filters"></div></div>
-        <div class="filter-row"><span class="chip-label">Format:</span><div class="chip-group" id="format-filters"></div></div>
+        <div class="filter-row"><span class="chip-label chip-label-level">Level:</span><div class="chip-group" id="level-filters"></div></div>
+        <div class="filter-row"><span class="chip-label chip-label-type">Type:</span><div class="chip-group" id="type-filters"></div></div>
+        <div class="filter-row"><span class="chip-label chip-label-source">Source:</span><div class="chip-group" id="source-filters"></div></div>
+        <div class="filter-row"><span class="chip-label chip-label-format">Format:</span><div class="chip-group" id="format-filters"></div></div>
         <button class="clear-btn" id="clear-all" style="display:none">Clear All</button>
       </div>
     </div>
