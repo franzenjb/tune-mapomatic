@@ -62,7 +62,11 @@ header p{font-size:.85em;opacity:.8;margin-bottom:12px;font-weight:300}
 .filter-row{display:flex;flex-direction:column;gap:4px}
 .chip{padding:5px 0;border:2px solid transparent;border-radius:4px;font-size:.72em;cursor:pointer;color:#fff;font-weight:700;transition:all .12s;text-align:center;width:100%}
 .chip:hover{opacity:.85;transform:scale(1.03)}
-.chip.active{box-shadow:0 0 0 2px #fff,0 0 0 4px currentColor;transform:scale(1.05)}
+.chip.active{background:#fff !important;color:inherit;border-width:2px;border-style:solid;transform:scale(1.05);font-weight:800}
+.chip.active[data-group="level"]{color:#DC143C;border-color:#DC143C}
+.chip.active[data-group="type"]{color:#1a5276;border-color:#1a5276}
+.chip.active[data-group="source"]{color:#1e8449;border-color:#1e8449}
+.chip.active[data-group="format"]{color:#6c3483;border-color:#6c3483}
 .chip[data-group="level"]{background:#DC143C;border-color:#DC143C}
 .chip[data-group="type"]{background:#1a5276;border-color:#1a5276}
 .chip[data-group="source"]{background:#1e8449;border-color:#1e8449}
@@ -73,8 +77,9 @@ header p{font-size:.85em;opacity:.8;margin-bottom:12px;font-weight:300}
 .chip-label-type{color:#1a5276}
 .chip-label-source{color:#1e8449}
 .chip-label-format{color:#6c3483}
-.clear-btn{font-size:.7em;color:#DC143C;cursor:pointer;padding:4px 8px;border:none;background:none;font-weight:600;align-self:flex-end}
-.clear-btn:hover{text-decoration:underline}
+.clear-btn{font-size:.8em;color:#fff;cursor:pointer;padding:8px 16px;border:none;background:#DC143C;font-weight:700;border-radius:4px;align-self:flex-end;transition:all .12s}
+.clear-btn:hover{background:#a0102e}
+.filter-help{font-size:.7em;color:#999;margin-bottom:4px;font-style:italic}
 
 /* RESULTS */
 .results-panel{display:flex;flex-direction:column;gap:12px}
@@ -198,6 +203,7 @@ footer a:hover{text-decoration:underline}
   <div class="results-panel">
     <div class="panel" style="position:sticky;top:88px;z-index:10">
       <div class="filter-bar" id="filter-bar">
+        <div class="filter-help">Click chips to filter results. Click a state on the map for local resources. Press Esc to reset.</div>
         <div class="filter-row"><span class="chip-label chip-label-level">Level:</span><div class="chip-group" id="level-filters"></div></div>
         <div class="filter-row"><span class="chip-label chip-label-type">Type:</span><div class="chip-group" id="type-filters"></div></div>
         <div class="filter-row"><span class="chip-label chip-label-source">Source:</span><div class="chip-group" id="source-filters"></div></div>
@@ -960,6 +966,7 @@ function renderFilters() {
       }
       updateClearBtn();
       update();
+      document.getElementById('results-title').scrollIntoView({behavior:'smooth',block:'start'});
     });
   });
 }
@@ -981,7 +988,14 @@ function renderResults(results) {
     const sName = sObj?.name || activeState;
     titleEl.textContent = sName;
   } else {
-    titleEl.textContent = document.getElementById('search').value.trim() ? 'Search Results' : 'All Resources';
+    const activeChips = Object.entries(activeFilters).filter(([,v]) => v);
+    if (activeChips.length > 0) {
+      const labels = {level:LEVEL_LABELS,type:TYPE_LABELS,source:SOURCE_LABELS,format:FORMAT_LABELS};
+      const parts = activeChips.map(([group,val]) => labels[group]?.[val] || val);
+      titleEl.textContent = parts.join(' + ');
+    } else {
+      titleEl.textContent = document.getElementById('search').value.trim() ? 'Search Results' : 'All Resources';
+    }
   }
 
   infoEl.textContent = `${results.length} resource${results.length!==1?'s':''}`;
