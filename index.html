@@ -1240,8 +1240,9 @@ function searchLookup(query){
   capped.forEach(c=>{
     const ch=LK_CHAPTERS[c.e]||{};
     html+=`<div class="lookup-card">
-      <div class="lk-county">${c.c}, ${c.s} &nbsp;<span class="lk-codes">${c.f}</span></div>
-      <div class="lk-chapter">${ch.n||'—'} &nbsp;<span class="lk-codes">${c.e} / ${ch.rc||'—'} / ${ch.dc||'—'}</span></div>
+      <div class="lk-county">${c.c}, ${c.s} &nbsp;<span class="lk-codes">FIPS ${c.f}</span></div>
+      <div class="lk-chapter">${ch.n||'—'}</div>
+      <div class="lk-codes">ECODE ${c.e} &nbsp; RCODE ${ch.rc||'—'} &nbsp; DCODE ${ch.dc||'—'}</div>
     </div>`;
   });
   el.innerHTML=html;
