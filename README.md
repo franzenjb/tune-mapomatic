@@ -2,7 +2,7 @@
 
 **Drop the needle on any Red Cross map resource.**
 
-A fast, searchable interface for 900+ American Red Cross map resources, forecasts, hazard maps, and GIS services. Replaces scrolling through the 500+ link [ARC Map Catalog](https://maps.redcross.org/website/maps/ARC_Map_Links.html).
+A fast, searchable interface for 1,000+ American Red Cross map resources, forecasts, hazard maps, and GIS services. Replaces scrolling through the 500+ link [ARC Map Catalog](https://maps.redcross.org/website/maps/ARC_Map_Links.html).
 
 ## Features
 
@@ -10,7 +10,7 @@ A fast, searchable interface for 900+ American Red Cross map resources, forecast
 - **Clickable US Map** - Tile grid map, click any state to see its resources
 - **Region Highlighting** - Selecting a state highlights its ARC region partners
 - **Filter Chips** - Filter by level (Chapter/Region/Division), type, source, format
-- **900+ Resources** - All 50 states, DC, 5 territories, national atlas, hazard maps, forecasts, tropical, monitoring, partner services
+- **1,000+ Resources** - All 50 states, DC, 5 territories, national atlas, hazard maps, forecasts, tropical, monitoring, partner services
 - **Copy URL** - One-click URL copy for any resource
 - **Zero Dependencies** - Single HTML file, no build step, no external libraries
 
@@ -24,11 +24,13 @@ A fast, searchable interface for 900+ American Red Cross map resources, forecast
 | Boundary Data | 8 | 2026 geodatabases (GDB) and alignment spreadsheets |
 | National Atlas | 34 | Division/region/chapter wall maps |
 | Hazard Maps | 22 | Earthquake, flood, hurricane, tornado, wildfire, tsunami, volcano |
-| Forecasts | 22 | SPC outlooks, WPC rainfall/heat/winter, graphical forecasts |
-| Tropical | 20 | NHC outlooks, JTWC, storm surge, tracking charts, SST |
-| Monitoring | 25 | GOES satellite, RADAR, USGS earthquakes, drought, fire, air quality |
+| Forecasts | 32 | SPC outlooks, WPC rainfall/heat/winter, fire weather, graphical forecasts |
+| Tropical | 32 | NHC outlooks, JTWC, storm surge, tracking charts, SST, hurricane history |
+| Monitoring | 52 | GOES satellite, RADAR, USGS earthquakes, drought, fire, air quality, HazMat |
+| International | 12 | Canada, Mexico, Caribbean, Oceania, world maps |
 | Partner Services | 25 | FEMA, NWS, USGS, Census REST endpoints |
 | Evacuation Maps | 12 | Coastal state storm surge/evacuation |
+| Declarations | 12 | FEMA Presidential Disaster Declarations by region |
 
 ## Data Source
 

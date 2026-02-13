@@ -59,7 +59,7 @@ header p{font-size:.85em;opacity:.8;margin-bottom:12px;font-weight:300}
 
 /* FILTERS */
 .filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.chip{padding:5px 12px;border:1px solid #ccc;border-radius:16px;font-size:.75em;cursor:pointer;background:#fff;color:#555;transition:all .12s;font-weight:500}
+.chip{padding:5px 12px;border:1px solid #ccc;border-radius:16px;font-size:.75em;cursor:pointer;background:#fff;color:#555;transition:all .12s;font-weight:500;min-width:64px;text-align:center}
 .chip:hover{border-color:#DC143C;color:#DC143C}
 .chip.active{background:#DC143C;color:#fff;border-color:#DC143C}
 .chip-group{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
@@ -540,6 +540,42 @@ function territoryResources() {
   return res;
 }
 
+function internationalResources() {
+  const b = `${BASE}/website/Maps/Images`;
+  return [
+    {name:'Canada Map',url:`${b}/International/Canada.gif`,cat:'international',level:'national',src:'other',fmt:'img'},
+    {name:'Mexico Map',url:`${b}/International/Mexico.gif`,cat:'international',level:'national',src:'other',fmt:'img'},
+    {name:'Cape Verde Map',url:`${b}/International/CapeVerde.gif`,cat:'international',level:'national',src:'other',fmt:'img'},
+    {name:'Marshall Islands Map',url:`${b}/Possessions/MarshallIslands.gif`,cat:'international',level:'national',src:'other',fmt:'img'},
+    {name:'Micronesia Map',url:`${b}/Possessions/Micronesia.gif`,cat:'international',level:'national',src:'other',fmt:'img'},
+    {name:'Oceania Map',url:`${b}/International/Oceania.pdf`,cat:'international',level:'national',src:'other',fmt:'pdf'},
+    {name:'Caribbean & Central America Map',url:`${b}/International/central_america.pdf`,cat:'international',level:'national',src:'other',fmt:'pdf'},
+    {name:'World Political Map',url:`${b}/International/political_world.pdf`,cat:'international',level:'national',src:'other',fmt:'pdf'},
+    {name:'World Time Zone Map',url:`${b}/International/time_zones.pdf`,cat:'international',level:'national',src:'other',fmt:'pdf'},
+    {name:'World Maps (Geology.com)',url:'https://geology.com/world/',cat:'international',level:'national',src:'other',fmt:'web'},
+    {name:'CIA World Fact Book Maps',url:'https://www.cia.gov/the-world-factbook/maps/',cat:'international',level:'national',src:'other',fmt:'web'},
+    {name:'CIA World Fact Book',url:'https://www.cia.gov/the-world-factbook/',cat:'international',level:'national',src:'other',fmt:'web'}
+  ].map(r => ({...r, state:'US'}));
+}
+
+function hurricaneHistoryResources() {
+  const b = `${BASE}/website/Maps/Images/NationalLevel`;
+  return [
+    {name:'Hurricane Formation Areas: July',url:`${b}/TROP_JUL.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Hurricane Formation Areas: August',url:`${b}/TROP_AUG.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Hurricane Formation Areas: September',url:`${b}/TROP_SEP.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Hurricane Formation Areas: October',url:`${b}/TROP_OCT.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Hurricane Formation Areas: November',url:`${b}/TROP_NOV.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Landfalling Hurricanes 1901-1920',url:`${b}/landfall_hurr_0120.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Landfalling Hurricanes 1921-1940',url:`${b}/landfall_hurr_2140.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Landfalling Hurricanes 1941-1960',url:`${b}/landfall_hurr_4160.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Landfalling Hurricanes 1961-1980',url:`${b}/landfall_hurr_6180.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Landfalling Hurricanes 1981-1996',url:`${b}/landfall_hurr_8196.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Landfalling Hurricanes 1950-1996',url:`${b}/landfall_hurr_5096.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'},
+    {name:'Major Hurricanes 1899-1996',url:`${b}/landfall_hurr_9996.gif`,cat:'hazard',level:'national',src:'noaa',fmt:'img',hazardType:'hurricane'}
+  ].map(r => ({...r, state:'US'}));
+}
+
 function forecastResources() {
   return [
     {name:'NOAA Surface Observations',url:'https://www.wpc.ncep.noaa.gov/sfcobs/sfcobs.shtml',cat:'forecast',level:'national',src:'nws',fmt:'web'},
@@ -563,7 +599,16 @@ function forecastResources() {
     {name:'Graphical Forecasts',url:'https://graphical.weather.gov/',cat:'forecast',level:'national',src:'nws',fmt:'web'},
     {name:'nowCOAST Data Display',url:'https://nowcoast.noaa.gov/',cat:'forecast',level:'national',src:'noaa',fmt:'web'},
     {name:'U.S. Seasonal Drought Outlook',url:'https://www.cpc.ncep.noaa.gov/products/expert_assessment/sdo_summary.php',cat:'forecast',level:'national',src:'noaa',fmt:'web'},
-    {name:'Travelers Forecast',url:'https://www.weather.gov/safety/travel',cat:'forecast',level:'national',src:'nws',fmt:'web'}
+    {name:'Travelers Forecast',url:'https://www.weather.gov/safety/travel',cat:'forecast',level:'national',src:'nws',fmt:'web'},
+    {name:'Day 2 Convective Outlook',url:'https://www.spc.noaa.gov/products/outlook/day2otlk.html',cat:'forecast',level:'national',src:'spc',fmt:'web'},
+    {name:'Day 3 Convective Outlook',url:'https://www.spc.noaa.gov/products/outlook/day3otlk.html',cat:'forecast',level:'national',src:'spc',fmt:'web'},
+    {name:'Day 4-8 Convective Outlook',url:'https://www.spc.noaa.gov/products/exper/day4-8/',cat:'forecast',level:'national',src:'spc',fmt:'web'},
+    {name:'Current Convective Watch',url:'https://www.spc.noaa.gov/products/watch/',cat:'forecast',level:'national',src:'spc',fmt:'web'},
+    {name:'Current Mesoscale Discussion',url:'https://www.spc.noaa.gov/products/md/',cat:'forecast',level:'national',src:'spc',fmt:'web'},
+    {name:'One Month Outlook',url:'https://www.cpc.ncep.noaa.gov/products/predictions/30day/',cat:'forecast',level:'national',src:'noaa',fmt:'web'},
+    {name:'Climate Prediction Center',url:'https://www.cpc.ncep.noaa.gov/',cat:'forecast',level:'national',src:'noaa',fmt:'web'},
+    {name:'USGS Fire Danger Forecast',url:'https://www.usgs.gov/fire-danger-forecast',cat:'forecast',level:'national',src:'usgs',fmt:'web'},
+    {name:'Palmer Drought Severity Index',url:'https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/regional_monitoring/palmer.gif',cat:'forecast',level:'national',src:'noaa',fmt:'img'}
   ].map(r => ({...r, state:'US'}));
 }
 
@@ -588,7 +633,18 @@ function tropicalResources() {
     {name:'East Pacific Hurricane Tracking Chart',url:'https://www.nhc.noaa.gov/pdf/tracking_chart_epac.pdf',cat:'tropical',level:'national',src:'nhc',fmt:'pdf'},
     {name:'ARC Tropical Hazard App',url:'https://experience.arcgis.com/experience/e8ef2338d7c6440db70440e9a2f1480c',cat:'tropical',level:'national',src:'arc',fmt:'web'},
     {name:'NHC Tropical Cyclone Model Output',url:'https://tropical.colostate.edu/tc-models/',cat:'tropical',level:'national',src:'other',fmt:'web'},
-    {name:'Two-Week Global Tropics Hazards',url:'https://www.cpc.ncep.noaa.gov/products/precip/CWlink/ghazards/',cat:'tropical',level:'national',src:'noaa',fmt:'web'}
+    {name:'Two-Week Global Tropics Hazards',url:'https://www.cpc.ncep.noaa.gov/products/precip/CWlink/ghazards/',cat:'tropical',level:'national',src:'noaa',fmt:'web'},
+    {name:'Central Pacific 7-Day Graphical Outlook',url:'https://www.nhc.noaa.gov/xgtwo/two_cpac_7d0.png',cat:'tropical',level:'national',src:'nhc',fmt:'img'},
+    {name:'Large Atlantic Hurricane Tracking Chart',url:'https://www.nhc.noaa.gov/pdf/AT_Track_chart1.20060925.pdf',cat:'tropical',level:'national',src:'nhc',fmt:'pdf'},
+    {name:'NHC Aircraft Reconnaissance',url:'https://www.nhc.noaa.gov/reconlist.shtml',cat:'tropical',level:'national',src:'nhc',fmt:'web'},
+    {name:'Hurricane Hunters',url:'https://www.hurricanehunters.com/',cat:'tropical',level:'national',src:'other',fmt:'web'},
+    {name:'Saffir-Simpson Damage Estimates (PDF)',url:'https://www.nhc.noaa.gov/pdf/sshws_table.pdf',cat:'tropical',level:'national',src:'nhc',fmt:'pdf'},
+    {name:'NHC Distance Calculator',url:'https://www.nhc.noaa.gov/gccalc.shtml',cat:'tropical',level:'national',src:'nhc',fmt:'web'},
+    {name:'Atlantic Season Track Map (2024)',url:'https://www.nhc.noaa.gov/data/tracks/tracks-at-2024.png',cat:'tropical',level:'national',src:'nhc',fmt:'img'},
+    {name:'Pacific Season Track Map (2024)',url:'https://www.nhc.noaa.gov/data/tracks/tracks-ep-2024.png',cat:'tropical',level:'national',src:'nhc',fmt:'img'},
+    {name:'Areal Tropical Rainfall Potential',url:'https://www.ssd.noaa.gov/PS/TROP/trap-img.html',cat:'tropical',level:'national',src:'noaa',fmt:'web'},
+    {name:'OPC Unified Surface Analysis',url:'https://ocean.weather.gov/unified_analysis.php',cat:'tropical',level:'national',src:'noaa',fmt:'web'},
+    {name:'Windy (Global Wind Visualization)',url:'https://www.windy.com',cat:'tropical',level:'national',src:'other',fmt:'web'}
   ].map(r => ({...r, state:'US'}));
 }
 
@@ -618,7 +674,33 @@ function monitoringResources() {
     {name:'ARC Weather/Hazard Web Map',url:'https://arc-nhq-gis.maps.arcgis.com/apps/webappviewer/index.html?id=1e5c66e4f3a04e0fac0b2fd4b1c5e5f1',cat:'monitoring',level:'national',src:'arc',fmt:'web'},
     {name:'Storm Prediction Center (SPC)',url:'https://www.spc.noaa.gov/',cat:'monitoring',level:'national',src:'spc',fmt:'web'},
     {name:'Daily Rainfall Accumulation',url:'https://www.wpc.ncep.noaa.gov/qpf/obsmaps/obsprecip.shtml',cat:'monitoring',level:'national',src:'nws',fmt:'web'},
-    {name:'Seismic Monitor (IRIS)',url:'https://ds.iris.edu/seismon/',cat:'monitoring',level:'national',src:'other',fmt:'web'}
+    {name:'Seismic Monitor (IRIS)',url:'https://ds.iris.edu/seismon/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'National Weather Service',url:'https://weather.gov/',cat:'monitoring',level:'national',src:'nws',fmt:'web'},
+    {name:'Weather Prediction Center (WPC)',url:'https://www.wpc.ncep.noaa.gov/',cat:'monitoring',level:'national',src:'nws',fmt:'web'},
+    {name:'National Water Prediction Service',url:'https://water.noaa.gov/',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'USACE River Gauges',url:'https://rivergages.mvr.usace.army.mil/WaterControl/new/layout.cfm',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'USGS Landslide Hazards Program',url:'https://www.usgs.gov/programs/landslide-hazards',cat:'monitoring',level:'national',src:'usgs',fmt:'web'},
+    {name:'USGS Earthquake Hazards Program',url:'https://www.usgs.gov/programs/earthquake-hazards/hazards',cat:'monitoring',level:'national',src:'usgs',fmt:'web'},
+    {name:'CUSEC (Central US Earthquake Consortium)',url:'https://cusec.org/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'West Coast & Alaska Tsunami Warning Center',url:'https://wcatwc.arh.noaa.gov/',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'Smithsonian Global Volcanism Program',url:'https://www.volcano.si.edu/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'National Integrated Drought Information',url:'https://www.drought.gov',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'National Snow & Ice Data Center',url:'https://nsidc.org/home',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'U.S. Avalanche Forecasts',url:'https://www.avalanche.org/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'Cal Fire',url:'https://www.fire.ca.gov/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'U.S. Forest Service WFAS',url:'https://www.wfas.net/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'Dartmouth Flood Observatory',url:'https://floodobservatory.colorado.edu/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'NOAA National Buoy Data',url:'https://www.ndbc.noaa.gov/',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'NOAA Tides & Currents',url:'https://tidesandcurrents.noaa.gov/map/index.shtml',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'ENSO/El Nino-La Nina (CPC)',url:'https://www.cpc.ncep.noaa.gov/products/precip/CWlink/MJO/enso.shtml',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'NOAA Space Weather Alerts',url:'https://www.swpc.noaa.gov/',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'Nuclear Regulatory Commission',url:'https://www.nrc.gov/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'USDOT Office of HazMat Safety',url:'https://hazmat.dot.gov/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'USDOT Emergency Response Guidebook',url:'https://hazmat.dot.gov/pubs/erg/gydebook.htm',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'CDC Emergency Preparedness',url:'https://www.bt.cdc.gov/',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'HHS Disaster & Emergency Resources',url:'https://www.hhs.gov/emergency/index.shtml',cat:'monitoring',level:'national',src:'other',fmt:'web'},
+    {name:'NOAA Office of Response & Restoration',url:'https://response.restoration.noaa.gov/',cat:'monitoring',level:'national',src:'noaa',fmt:'web'},
+    {name:'Chemtrec (HazMat)',url:'https://www.chemtrec.org/',cat:'monitoring',level:'national',src:'other',fmt:'web'}
   ].map(r => ({...r, state:'US'}));
 }
 
@@ -671,6 +753,12 @@ function getAllResources() {
   // Territory resources
   all = all.concat(territoryResources());
 
+  // International maps
+  all = all.concat(internationalResources());
+
+  // Hurricane history maps
+  all = all.concat(hurricaneHistoryResources());
+
   // Forecast resources
   all = all.concat(forecastResources());
 
@@ -681,13 +769,12 @@ function getAllResources() {
   all = all.concat(monitoringResources());
 
   // Presidential declarations
-  ['CONUS','Region 1','Region 2','Region 3','Region 4','Region 5',
-   'Region 6','Region 7','Region 8','Region 9','Region 10'].forEach((r,i) => {
-    const file = i===0?'CONUS.pdf':i===1?'FEMA_recent.jpg':`cregion${i}.jpg`;
-    // Fix: CONUS=CONUS.pdf, All Regions=FEMA_recent.jpg, Region N=cregionN.jpg
+  ['CONUS','All Regions','Region 1','Region 2','Region 3','Region 4','Region 5',
+   'Region 6','Region 7','Region 8','Region 9','Region 10'].forEach((r) => {
     let f;
     if (r==='CONUS') f='CONUS.pdf';
-    else f=`cregion${i}.jpg`;
+    else if (r==='All Regions') f='FEMA_recent.jpg';
+    else f=`cregion${r.split(' ')[1]}.jpg`;
     all.push({
       name:`Presidential Declarations: ${r}`,
       url:`${BASE}/website/Maps/Images/NationalLevel/${f}`,
@@ -757,7 +844,7 @@ function filterResources() {
 // UI RENDERING
 // ======================================================================
 const LEVEL_LABELS = {county:'County',chapter:'Chapter',region:'Region',division:'Division',state:'State',national:'National'};
-const TYPE_LABELS = {'chapter-map':'Chapter Maps','region-map':'Region Maps','district-map':'District Maps','state-map':'State Maps','reference':'Reference','demographics':'Demographics','weather':'Weather','evacuation':'Evacuation','boundary-data':'Boundary Data','national-atlas':'National Atlas','hazard':'Hazards','forecast':'Forecasts','tropical':'Tropical','monitoring':'Monitoring','partner-service':'Services','declarations':'Declarations'};
+const TYPE_LABELS = {'chapter-map':'Chapter Maps','region-map':'Region Maps','district-map':'District Maps','state-map':'State Maps','reference':'Reference','demographics':'Demographics','weather':'Weather','evacuation':'Evacuation','boundary-data':'Boundary Data','national-atlas':'National Atlas','hazard':'Hazards','forecast':'Forecasts','tropical':'Tropical','monitoring':'Monitoring','partner-service':'Services','declarations':'Declarations','international':'International'};
 const SOURCE_LABELS = {arc:'Red Cross',fema:'FEMA',nws:'NWS',usgs:'USGS',census:'Census',esri:'Esri',noaa:'NOAA',spc:'SPC',nhc:'NHC',navy:'Navy',usda:'USDA',other:'Other'};
 const FORMAT_LABELS = {pdf:'PDF',gdb:'GDB',xlsx:'Excel',web:'Web',rest:'REST',shp:'Shapefile',img:'Image'};
 
@@ -803,10 +890,11 @@ function renderFeatured() {
 }
 
 function renderFilters() {
-  const levels = [...new Set(ALL_RESOURCES.map(r=>r.level))].sort();
-  const types = [...new Set(ALL_RESOURCES.map(r=>r.cat))].sort();
-  const sources = [...new Set(ALL_RESOURCES.map(r=>r.src))].sort();
-  const formats = [...new Set(ALL_RESOURCES.map(r=>r.fmt))].sort();
+  const sortByLabel = (keys, labels) => [...keys].sort((a,b) => (labels[a]||a).localeCompare(labels[b]||b));
+  const levels = sortByLabel(new Set(ALL_RESOURCES.map(r=>r.level)), LEVEL_LABELS);
+  const types = sortByLabel(new Set(ALL_RESOURCES.map(r=>r.cat)), TYPE_LABELS);
+  const sources = sortByLabel(new Set(ALL_RESOURCES.map(r=>r.src)), SOURCE_LABELS);
+  const formats = sortByLabel(new Set(ALL_RESOURCES.map(r=>r.fmt)), FORMAT_LABELS);
 
   document.getElementById('level-filters').innerHTML = levels.map(l =>
     `<button class="chip" data-group="level" data-value="${l}">${LEVEL_LABELS[l]||l}</button>`
@@ -877,7 +965,7 @@ function renderResults(results) {
   });
 
   // Category display order
-  const catOrder = ['chapter-map','region-map','district-map','boundary-data','national-atlas','state-map','evacuation','hazard','forecast','tropical','monitoring','weather','demographics','reference','partner-service','declarations'];
+  const catOrder = ['chapter-map','region-map','district-map','boundary-data','national-atlas','state-map','evacuation','hazard','forecast','tropical','monitoring','weather','demographics','reference','international','partner-service','declarations'];
   const sortedCats = Object.keys(grouped).sort((a,b) => {
     const ai = catOrder.indexOf(a); const bi = catOrder.indexOf(b);
     return (ai===-1?99:ai) - (bi===-1?99:bi);
@@ -972,6 +1060,33 @@ function clearAll() {
 function update() {
   const results = filterResources();
   renderResults(results);
+  updateChipVisibility();
+}
+
+function updateChipVisibility() {
+  // Get the pool of resources BEFORE chip filters are applied (but after state + search)
+  const query = document.getElementById('search').value.trim();
+  let pool = ALL_RESOURCES.map(r => ({...r, score: searchScore(r, query)}))
+    .filter(r => r.score > 0);
+  if (activeState) pool = pool.filter(r => r.state === activeState);
+
+  const availLevels = new Set(pool.map(r => r.level));
+  const availTypes = new Set(pool.map(r => r.cat));
+  const availSources = new Set(pool.map(r => r.src));
+  const availFormats = new Set(pool.map(r => r.fmt));
+
+  document.querySelectorAll('.chip[data-group="level"]').forEach(c => {
+    c.style.display = availLevels.has(c.dataset.value) ? '' : 'none';
+  });
+  document.querySelectorAll('.chip[data-group="type"]').forEach(c => {
+    c.style.display = availTypes.has(c.dataset.value) ? '' : 'none';
+  });
+  document.querySelectorAll('.chip[data-group="source"]').forEach(c => {
+    c.style.display = availSources.has(c.dataset.value) ? '' : 'none';
+  });
+  document.querySelectorAll('.chip[data-group="format"]').forEach(c => {
+    c.style.display = availFormats.has(c.dataset.value) ? '' : 'none';
+  });
 }
 
 // ======================================================================
