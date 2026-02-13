@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tune-Mapomatic | Red Cross Map Resource Finder</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:#f0f0f0;color:#1a1a1a;min-height:100vh}
+
+/* HEADER */
+header{background:#DC143C;color:#fff;padding:20px 24px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+header h1{font-size:1.6em;font-weight:700;letter-spacing:-.5px;margin-bottom:2px}
+header h1 span{font-weight:300;opacity:.85;font-size:.7em;margin-left:6px}
+header p{font-size:.85em;opacity:.8;margin-bottom:12px;font-weight:300}
+.search-wrap{max-width:640px;margin:0 auto;position:relative}
+#search{width:100%;padding:11px 16px 11px 40px;border:none;border-radius:6px;font-size:1em;background:rgba(255,255,255,.95);color:#1a1a1a;outline:none;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+#search:focus{background:#fff;box-shadow:0 2px 16px rgba(0,0,0,.15)}
+#search::placeholder{color:#888}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#999;font-size:1.1em;pointer-events:none}
+#result-count{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.75em;color:#666;background:#e8e8e8;padding:2px 8px;border-radius:10px}
+
+/* LAYOUT */
+.app{max-width:1400px;margin:0 auto;padding:16px;display:grid;grid-template-columns:340px 1fr;gap:16px}
+@media(max-width:900px){.app{grid-template-columns:1fr}}
+
+/* LEFT PANEL: MAP */
+.map-panel{display:flex;flex-direction:column;gap:12px}
+.panel{background:#fff;border-radius:6px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.panel h3{font-size:.85em;text-transform:uppercase;letter-spacing:.5px;color:#888;margin-bottom:10px;font-weight:600}
+
+/* TILE GRID MAP */
+.state-grid{display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(8,1fr);gap:2px}
+.state-tile{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.65em;font-weight:700;color:#555;background:#e4e4e4;border-radius:3px;cursor:pointer;transition:all .12s ease;user-select:none;border:2px solid transparent;line-height:1}
+.state-tile:hover{background:#d0d0d0;transform:scale(1.08);z-index:2}
+.state-tile.active{background:#DC143C;color:#fff;border-color:#a0102e;transform:scale(1.12);z-index:3;box-shadow:0 2px 8px rgba(220,20,60,.4)}
+.state-tile.region-match{background:#f5d0d5;color:#a0102e;border-color:#DC143C}
+.state-tile.has-results{background:#d4e8d4;color:#2a7a2a}
+
+/* TERRITORIES ROW */
+.terr-row{display:flex;gap:4px;margin-top:4px}
+.terr-tile{flex:1;padding:6px 4px;text-align:center;font-size:.6em;font-weight:700;color:#555;background:#e4e4e4;border-radius:3px;cursor:pointer;transition:all .12s ease;border:2px solid transparent}
+.terr-tile:hover{background:#d0d0d0}
+.terr-tile.active{background:#DC143C;color:#fff;border-color:#a0102e}
+
+/* FEATURED DOWNLOADS */
+.download-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:.8em}
+.download-item:last-child{border:none}
+.download-item a{color:#1a6bb5;text-decoration:none;font-weight:500;flex:1}
+.download-item a:hover{color:#DC143C;text-decoration:underline}
+.fmt-badge{font-size:.6em;font-weight:700;padding:2px 5px;border-radius:3px;text-transform:uppercase;white-space:nowrap}
+.fmt-gdb{background:#e8f0e8;color:#2a7a2a}
+.fmt-xlsx{background:#e8e8f0;color:#2a2a7a}
+.fmt-pdf{background:#f0e8e8;color:#7a2a2a}
+.fmt-web{background:#e8f0f0;color:#2a6a7a}
+.fmt-rest{background:#f0e8f0;color:#6a2a7a}
+.fmt-shp{background:#f0f0e8;color:#6a6a2a}
+.fmt-img{background:#f0ece8;color:#7a5a2a}
+
+/* FILTERS */
+.filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{padding:5px 12px;border:1px solid #ccc;border-radius:16px;font-size:.75em;cursor:pointer;background:#fff;color:#555;transition:all .12s;font-weight:500}
+.chip:hover{border-color:#DC143C;color:#DC143C}
+.chip.active{background:#DC143C;color:#fff;border-color:#DC143C}
+.chip-group{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.chip-label{font-size:.65em;text-transform:uppercase;color:#999;font-weight:700;letter-spacing:.5px;margin-right:2px}
+.filter-divider{width:1px;height:20px;background:#ddd;margin:0 4px}
+.clear-btn{font-size:.7em;color:#DC143C;cursor:pointer;padding:4px 8px;border:none;background:none;font-weight:600}
+.clear-btn:hover{text-decoration:underline}
+
+/* RESULTS */
+.results-panel{display:flex;flex-direction:column;gap:12px}
+.results-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.results-header h2{font-size:1.1em;font-weight:600;color:#333}
+.results-info{font-size:.8em;color:#888}
+.results-grid{display:flex;flex-direction:column;gap:4px}
+.result-card{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:all .1s;cursor:default;border-left:3px solid transparent}
+.result-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08);border-left-color:#DC143C}
+.result-card .name{flex:1;min-width:0}
+.result-card .name a{color:#1a1a1a;text-decoration:none;font-size:.88em;font-weight:500;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result-card .name a:hover{color:#DC143C}
+.result-card .name .subtitle{font-size:.72em;color:#999;margin-top:1px}
+.result-card .badges{display:flex;gap:4px;flex-shrink:0;align-items:center}
+.source-badge{font-size:.6em;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase}
+.src-arc{background:#DC143C;color:#fff}
+.src-fema{background:#003d7a;color:#fff}
+.src-nws{background:#005ea2;color:#fff}
+.src-usgs{background:#2e7d32;color:#fff}
+.src-census{background:#5c6bc0;color:#fff}
+.src-esri{background:#7b1fa2;color:#fff}
+.src-noaa{background:#00838f;color:#fff}
+.src-other{background:#888;color:#fff}
+.copy-btn{background:none;border:1px solid #ddd;border-radius:3px;padding:3px 6px;cursor:pointer;font-size:.65em;color:#888;transition:all .1s}
+.copy-btn:hover{border-color:#DC143C;color:#DC143C}
+.copy-btn.copied{background:#DC143C;color:#fff;border-color:#DC143C}
+
+/* CATEGORY SECTIONS */
+.category-header{padding:8px 14px;background:#f8f8f8;border-radius:5px;font-size:.8em;font-weight:600;color:#555;margin-top:6px;display:flex;align-items:center;gap:8px}
+.category-header .cat-count{background:#e0e0e0;color:#888;font-size:.8em;padding:1px 6px;border-radius:8px;font-weight:500}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px;color:#999}
+.empty-state .big{font-size:2em;margin-bottom:8px}
+.empty-state p{font-size:.9em}
+
+/* FOOTER */
+footer{text-align:center;padding:20px;font-size:.75em;color:#999;margin-top:20px}
+footer a{color:#DC143C;text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* LOADING */
+.skeleton{background:linear-gradient(90deg,#e8e8e8 25%,#f0f0f0 50%,#e8e8e8 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;height:40px;border-radius:5px;margin-bottom:4px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Tune-Mapomatic <span>by Red Cross GIS</span></h1>
+  <p>Drop the needle on any Red Cross map resource. 750+ maps, boundaries, and services.</p>
+  <div class="search-wrap">
+    <span class="search-icon">&#x1F50D;</span>
+    <input type="search" id="search" placeholder="Search: 'SC chapter map', 'earthquake risk', 'FEMA REST', 'boundary GDB'..." autocomplete="off" autofocus>
+    <span id="result-count"></span>
+  </div>
+</header>
+
+<div class="app">
+  <!-- LEFT: MAP + DOWNLOADS -->
+  <div class="map-panel">
+    <div class="panel">
+      <h3>Click a State</h3>
+      <div class="state-grid" id="state-grid"></div>
+      <div class="terr-row" id="terr-row"></div>
+    </div>
+    <div class="panel">
+      <h3>Boundary Data (2026)</h3>
+      <div id="featured-downloads"></div>
+    </div>
+    <div class="panel">
+      <h3>Quick Links</h3>
+      <div class="download-item"><span class="fmt-badge fmt-web">WEB</span><a href="https://arc-nhq-gis.maps.arcgis.com/home/index.html" target="_blank">ARC AGOL Portal</a></div>
+      <div class="download-item"><span class="fmt-badge fmt-web">WEB</span><a href="https://maps.redcross.org/website/maps/ARC_Map_Links.html" target="_blank">Full Map Catalog (source)</a></div>
+      <div class="download-item"><span class="fmt-badge fmt-web">WEB</span><a href="https://maps.redcross.org/website/Services/ARC_Services.html" target="_blank">Map Services Catalog</a></div>
+      <div class="download-item"><span class="fmt-badge fmt-web">WEB</span><a href="https://maps.redcross.org/website/Weather/ARC_Weather.html" target="_blank">Weather & Hazard Center</a></div>
+      <div class="download-item"><span class="fmt-badge fmt-web">WEB</span><a href="https://maps.redcross.org/website/Tropical/ARC_Tropical_Links.html" target="_blank">Tropical Hazard Center</a></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: FILTERS + RESULTS -->
+  <div class="results-panel">
+    <div class="panel" style="position:sticky;top:88px;z-index:10">
+      <div class="filter-bar" id="filter-bar">
+        <span class="chip-label">Level:</span>
+        <div class="chip-group" id="level-filters"></div>
+        <div class="filter-divider"></div>
+        <span class="chip-label">Type:</span>
+        <div class="chip-group" id="type-filters"></div>
+        <div class="filter-divider"></div>
+        <span class="chip-label">Source:</span>
+        <div class="chip-group" id="source-filters"></div>
+        <div class="filter-divider"></div>
+        <span class="chip-label">Format:</span>
+        <div class="chip-group" id="format-filters"></div>
+        <button class="clear-btn" id="clear-all" style="display:none">Clear All</button>
+      </div>
+    </div>
+    <div class="results-header">
+      <h2 id="results-title">All Resources</h2>
+      <span class="results-info" id="results-info"></span>
+    </div>
+    <div class="results-grid" id="results"></div>
+  </div>
+</div>
+
+<footer>
+  <strong>Tune-Mapomatic</strong> &mdash; Source: <a href="https://maps.redcross.org/website/maps/ARC_Map_Links.html" target="_blank">maps.redcross.org</a>
+  &nbsp;|&nbsp; Part of <a href="https://franzenjb.github.io/GeoJSON-Creation-Tool/" target="_blank">Red Cross GIS Tools</a>
+  &nbsp;|&nbsp; Data current as of FY'26 (January 2026)
+</footer>
+
+<script>
+// ======================================================================
+// DATA
+// ======================================================================
+const BASE = 'https://maps.redcross.org';
+
+const STATES = {
+  AL:{name:'Alabama',dir:'Alabama',rc:'AL',region:'ALMS',evac:true},
+  AK:{name:'Alaska',dir:'Alaska',rc:'AK',region:'AK',evac:false},
+  AZ:{name:'Arizona',dir:'Arizona',rc:'AZ',region:'AZNM',evac:false},
+  AR:{name:'Arkansas',dir:'Arkansas',rc:'AR',region:'MOAR',evac:false},
+  CA:{name:'California',dir:'California',rc:'CA',region:'CA',evac:false},
+  CO:{name:'Colorado',dir:'colorado',rc:'CO',region:'COWY',evac:false},
+  CT:{name:'Connecticut',dir:'Connecticut',rc:'CT',region:'CTRI',evac:false},
+  DE:{name:'Delaware',dir:'Delaware',rc:'DE',region:'DCDCDEMDVA',evac:false},
+  DC:{name:'District of Columbia',dir:'DC',rc:'DC',region:'DCDCDEMDVA',evac:false},
+  FL:{name:'Florida',dir:'Florida',rc:'FL',region:'FL',evac:true},
+  GA:{name:'Georgia',dir:'Georgia',rc:'GA',region:'GA',evac:true},
+  HI:{name:'Hawaii',dir:'Hawaii',rc:'HI',region:'HIGUMPAS',evac:false},
+  ID:{name:'Idaho',dir:'Idaho',rc:'ID',region:'IDMT',evac:false},
+  IL:{name:'Illinois',dir:'Illinois',rc:'IL',region:'IL',evac:false},
+  IN:{name:'Indiana',dir:'Indiana',rc:'IN',region:'IN',evac:false},
+  IA:{name:'Iowa',dir:'Iowa',rc:'IA',region:'IANE',evac:false},
+  KS:{name:'Kansas',dir:'Kansas',rc:'KS',region:'KSOK',evac:false},
+  KY:{name:'Kentucky',dir:'Kentucky',rc:'KY',region:'KY',evac:false},
+  LA:{name:'Louisiana',dir:'Louisiana',rc:'LA',region:'LA',evac:true},
+  ME:{name:'Maine',dir:'Maine',rc:'ME',region:'MENHVT',evac:false},
+  MD:{name:'Maryland',dir:'Maryland',rc:'MD',region:'DCDCDEMDVA',evac:false},
+  MA:{name:'Massachusetts',dir:'Massachusetts',rc:'MA',region:'MA',evac:true},
+  MI:{name:'Michigan',dir:'Michigan',rc:'MI',region:'MI',evac:false},
+  MN:{name:'Minnesota',dir:'Minnesota',rc:'MN',region:'MNNDSD',evac:false},
+  MS:{name:'Mississippi',dir:'Mississippi',rc:'MS',region:'ALMS',evac:true},
+  MO:{name:'Missouri',dir:'Missouri',rc:'MO',region:'MOAR',evac:false},
+  MT:{name:'Montana',dir:'Montana',rc:'MT',region:'IDMT',evac:false},
+  NE:{name:'Nebraska',dir:'Nebraska',rc:'NE',region:'IANE',evac:false},
+  NV:{name:'Nevada',dir:'Nevada',rc:'NV',region:'UTNV',evac:false},
+  NH:{name:'New Hampshire',dir:'NewHampshire',rc:'NH',region:'MENHVT',evac:false},
+  NJ:{name:'New Jersey',dir:'NewJersey',rc:'NJ',region:'NJ',evac:true},
+  NM:{name:'New Mexico',dir:'NewMexico',rc:'NM',region:'AZNM',evac:false},
+  NY:{name:'New York',dir:'NewYork',rc:'NY',region:'NY',evac:true},
+  NC:{name:'North Carolina',dir:'NorthCarolina',rc:'NC',region:'NC',evac:true},
+  ND:{name:'North Dakota',dir:'NorthDakota',rc:'ND',region:'MNNDSD',evac:false},
+  OH:{name:'Ohio',dir:'Ohio',rc:'OH',region:'OH',evac:false},
+  OK:{name:'Oklahoma',dir:'Oklahoma',rc:'OK',region:'KSOK',evac:false},
+  OR:{name:'Oregon',dir:'Oregon',rc:'OR',region:'OR',evac:false},
+  PA:{name:'Pennsylvania',dir:'Pennsylvania',rc:'PA',region:'PA',evac:false},
+  RI:{name:'Rhode Island',dir:'RhodeIsland',rc:'RI',region:'CTRI',evac:false},
+  SC:{name:'South Carolina',dir:'SouthCarolina',rc:'SC',region:'SC',evac:true},
+  SD:{name:'South Dakota',dir:'SouthDakota',rc:'SD',region:'MNNDSD',evac:false},
+  TN:{name:'Tennessee',dir:'Tennessee',rc:'TN',region:'TN',evac:false},
+  TX:{name:'Texas',dir:'Texas',rc:'TX',region:'TX',evac:true},
+  UT:{name:'Utah',dir:'Utah',rc:'UT',region:'UTNV',evac:false},
+  VT:{name:'Vermont',dir:'Vermont',rc:'VT',region:'MENHVT',evac:false},
+  VA:{name:'Virginia',dir:'Virginia',rc:'VA',region:'VA',evac:true},
+  WA:{name:'Washington',dir:'Washington',rc:'WA',region:'WA',evac:false},
+  WV:{name:'West Virginia',dir:'WestVirginia',rc:'WV',region:'WV',evac:false},
+  WI:{name:'Wisconsin',dir:'Wisconsin',rc:'WI',region:'WI',evac:false},
+  WY:{name:'Wyoming',dir:'Wyoming',rc:'WY',region:'COWY',evac:false}
+};
+
+const TERRITORIES = {
+  PR:{name:'Puerto Rico',dir:'PuertoRico',rc:'PR',region:'PR'},
+  VI:{name:'U.S. Virgin Islands',dir:'USVI',rc:'VI',region:'FL'},
+  GU:{name:'Guam',dir:'Guam',rc:'GU',region:'HIGUMPAS'},
+  AS:{name:'American Samoa',dir:'Samoa',rc:'AS',region:'HIGUMPAS'},
+  MP:{name:'CNMI',dir:'CNMI',rc:'MP',region:'HIGUMPAS'}
+};
+
+// Tile grid positions [row, col] on an 11-col, 8-row grid
+const GRID = {
+  AK:[0,0], ME:[0,10],
+  WI:[1,5], VT:[1,9], NH:[1,10],
+  WA:[2,0], ID:[2,1], MT:[2,2], ND:[2,3], MN:[2,4], IL:[2,5], MI:[2,6], NY:[2,8], MA:[2,9], CT:[2,10],
+  OR:[3,0], NV:[3,1], WY:[3,2], SD:[3,3], IA:[3,4], IN:[3,5], OH:[3,6], PA:[3,7], NJ:[3,8], RI:[3,10],
+  CA:[4,0], UT:[4,1], CO:[4,2], NE:[4,3], MO:[4,4], KY:[4,5], WV:[4,6], VA:[4,7], MD:[4,8], DE:[4,9], DC:[4,10],
+  AZ:[5,1], NM:[5,2], KS:[5,3], AR:[5,4], TN:[5,5], NC:[5,6], SC:[5,7],
+  OK:[6,3], LA:[6,4], MS:[6,5], AL:[6,6], GA:[6,7],
+  HI:[7,0], TX:[7,3], FL:[7,6]
+};
+
+// District maps for large states
+const DISTRICT_MAPS = {
+  CA:['05R04','05R12','05R20','05R28','05R32'],
+  FL:['10R08','10R12'],
+  NY:['32R04','32R16','32R20'],
+  OH:['35R12','35R16'],
+  PA:['38R24','38R28'],
+  TX:['43R08','43R16','43R28']
+};
+
+// Special Texas maps
+const TX_SPECIAL = [
+  {name:'Texas EMA Districts',file:'TX_EMA_Districts_chapters.jpg',fmt:'img'},
+  {name:'Texas Shelter Hubs',file:'Texas_Shelter_Hubs.pdf',fmt:'pdf'},
+  {name:'Texas Shelter Facilities',file:'Texas_Shelter_Facilities.pdf',fmt:'pdf'},
+  {name:'Texas Point-to-Point Shelters',file:'Texas_Point-to-Point_Shelters.pdf',fmt:'pdf'}
+];
+
+// Boundary GDBs
+const BOUNDARY_DATA = [
+  {name:'Master (ALL Boundaries)',file:'Master_RC_Geo_2026.gdb.zip',desc:'Chapters + Counties + Regions + Divisions + States'},
+  {name:'Chapters Only',file:'Master_RC_Geo_Chapter_2026.gdb.zip',desc:'Chapter-level boundaries'},
+  {name:'Regions Only',file:'Master_RC_Geo_Region_2026.gdb.zip',desc:'Regional admin boundaries'},
+  {name:'Divisions Only',file:'Master_RC_Geo_Division_2026.gdb.zip',desc:'Corporate division boundaries'},
+  {name:'States Only',file:'Master_RC_Geo_States_2026.gdb.zip',desc:'State-level boundaries'},
+  {name:'DRA/Territories',file:'Master_RC_Geo_DRA_Territories_2026.gdb.zip',desc:'RC Respond dispatch territories'},
+  {name:'Chapter Alignment (w/ Demographics)',file:'Chapter_Alignment_Public_with_Demogs.xlsx',desc:'July 2025 chapter data + demographics',fmt:'xlsx'},
+  {name:'Chapter Alignment (w/o Demographics)',file:'Chapter_Alignment_Public_without_Demogs.xlsx',desc:'July 2025 chapter data',fmt:'xlsx'}
+];
+
+// National atlas maps
+const NATIONAL_ATLAS = [
+  {name:'Regional Groupings',file:'USREG.pdf'},
+  {name:'Regions + Divisions',file:'USREGDIV.pdf'},
+  {name:'Regions + Chapters',file:'USREGCHAP.pdf'},
+  {name:'Regions + Chapters (labeled)',file:'USREGCHAP_Label.pdf'},
+  {name:'Regions + Divisions + Chapters (labeled)',file:'USREGDIVCHAP_Label.pdf'},
+  {name:'Regions + Divs + Counties + Chapters (labeled)',file:'USREGDIVCOCHAP_Label.pdf'},
+  {name:'Regions + Counties + Chapters (labeled)',file:'USREGCOCHAP_Label.pdf'},
+  {name:'Chapters Only',file:'USCHAP.pdf'},
+  {name:'Chapters + Counties',file:'USCHAPCO.pdf'},
+  {name:'Chapter Names Legend',file:'USCHAP_Names_Legend.pdf'},
+  {name:'Divisions + Regions',file:'US.pdf'},
+  {name:'Divisions Only',file:'USDIV.pdf'},
+  {name:'D21 Division by Region',file:'USREGDIV_D21.pdf'},
+  {name:'D22 Division by Region',file:'USREGDIV_D22.pdf'},
+  {name:'D23 Division by Region',file:'USREGDIV_D23.pdf'},
+  {name:'D24 Division by Region',file:'USREGDIV_D24.pdf'},
+  {name:'D25 Division by Region',file:'USREGDIV_D25.pdf'},
+  {name:'D27 Division by Region',file:'USREGDIV_D27.pdf'},
+  {name:'FEMA Regions (CONUS)',file:'FEMA_Regions.pdf'},
+  {name:'U.S. Time Zones',file:'USTimeZone.pdf'},
+  {name:'U.S. States',file:'states.pdf'},
+  {name:'State Capitals',file:'states_capitals.pdf'},
+  {name:'Population Density (National)',file:'US_Census2K_Profile.pdf'},
+  {name:'Congressional Districts (National)',file:'pagecgd109_us3.pdf'},
+  {name:'Federal Lands (National)',file:'fedlands3.pdf'},
+  {name:'Rivers & Lakes',file:'rivers_lakes.pdf'},
+  {name:'Annual Precipitation (National)',file:'pageprecip_us3.pdf'},
+  {name:'FIPS County Codes (National)',file:'fips_cnty_natl.pdf'},
+  {name:'NWS Offices',file:'nws_offices.pdf'},
+  {name:'NWS Weather Forecast Offices',file:'cwa_all.pdf'},
+  {name:'River Forecast Offices',file:'wfo_rfc_basins.pdf'},
+  {name:'RADAR Coverage',file:'wsr_88d_f_ring.pdf'},
+  {name:'ASOS Locations',file:'asos_us.pdf'},
+  {name:'Atlantic Hurricane Tracking Chart',file:'AT_Track_chart2.20060925.pdf'}
+];
+
+// Hazard resources
+const HAZARD_RESOURCES = [
+  // Earthquake
+  {name:'USGS Seismic Maps (Live)',url:'https://earthquake.usgs.gov/earthquakes/map/',cat:'earthquake',src:'usgs',fmt:'web'},
+  {name:'USGS ShakeMaps',url:'https://earthquake.usgs.gov/data/shakemap/',cat:'earthquake',src:'usgs',fmt:'web'},
+  {name:'USGS Latest Earthquake Events',url:'https://earthquake.usgs.gov/',cat:'earthquake',src:'usgs',fmt:'web'},
+  {name:'Esri Earthquake Viewer',url:'https://www.arcgis.com/apps/PublicInformation/index.html?appid=de7c7b077c0144149fe5f9dd7857361d',cat:'earthquake',src:'esri',fmt:'web'},
+  {name:'Earthquake Risk Areas (US)',url:BASE+'/website/Maps/Images/NationalLevel/earthquake_hires.jpg',cat:'earthquake',src:'arc',fmt:'img'},
+  // Flood
+  {name:'FEMA Flood Hazard Mapper',url:'https://hazards.fema.gov/',cat:'flood',src:'fema',fmt:'web'},
+  {name:'Esri Flood Viewer',url:'https://fema.maps.arcgis.com/home/webmap/viewer.html?webmap=cbe088e7c8704464aa0fc34eb99e7f30',cat:'flood',src:'esri',fmt:'web'},
+  {name:'Flood Risk Areas (US)',url:BASE+'/website/Maps/Images/NationalLevel/flood_hires.jpg',cat:'flood',src:'arc',fmt:'img'},
+  // Hurricane
+  {name:'Esri Hurricane Viewer',url:'https://www.arcgis.com/apps/MapSeries/index.html?appid=db6238df958148108cceb3b05619a7f6',cat:'hurricane',src:'esri',fmt:'web'},
+  {name:'NHC GIS Data (Shapefiles)',url:'http://www.nhc.noaa.gov/gis',cat:'hurricane',src:'noaa',fmt:'shp'},
+  {name:'Hurricane Risk Areas (US)',url:BASE+'/website/Maps/Images/NationalLevel/hurricane_hires.jpg',cat:'hurricane',src:'arc',fmt:'img'},
+  // Tornado
+  {name:'Tornado Risk Areas (US)',url:BASE+'/website/Maps/Images/NationalLevel/tornado.gif',cat:'tornado',src:'arc',fmt:'img'},
+  // Wildfire
+  {name:'NOAA Fire Mapping (HMS)',url:'https://www.ospo.noaa.gov/Products/land/hms.html',cat:'wildfire',src:'noaa',fmt:'web'},
+  {name:'USFS Fire Mapping',url:'https://fsapps.nwcg.gov/',cat:'wildfire',src:'other',fmt:'web'},
+  {name:'NIFC Open Data (Wildfire)',url:'https://data-nifc.opendata.arcgis.com/',cat:'wildfire',src:'other',fmt:'web'},
+  {name:'Esri Wildfire Viewer',url:'https://www.arcgis.com/apps/PublicInformation/index.html?appid=4ae7c683b9574856a3d3b7f75162b3f4',cat:'wildfire',src:'esri',fmt:'web'},
+  {name:'Wildfire Risk Areas (US)',url:BASE+'/website/Maps/Images/NationalLevel/wildfire_hires.jpg',cat:'wildfire',src:'arc',fmt:'img'},
+  // Other hazards
+  {name:'Tsunami Risk Areas (US)',url:BASE+'/website/Maps/Images/NationalLevel/tsunami_hires.jpg',cat:'tsunami',src:'arc',fmt:'img'},
+  {name:'Volcano Risk Areas (US)',url:BASE+'/website/Maps/Images/NationalLevel/volcano_hires.jpg',cat:'volcano',src:'arc',fmt:'img'},
+  {name:'Landslide Risk Areas (US)',url:BASE+'/website/Maps/Images/NationalLevel/landslides_hires.jpg',cat:'landslide',src:'arc',fmt:'img'},
+  // Global viewers
+  {name:'Pacific Disaster Center (Global)',url:'https://disasteralert.pdc.org/disasteralert/',cat:'global',src:'other',fmt:'web'},
+  {name:'NOAA Hazards Viewer (Global)',url:'https://maps.ngdc.noaa.gov/viewers/hazards/',cat:'global',src:'noaa',fmt:'web'},
+  {name:'Google Public Alerts',url:'https://www.google.org/publicalerts',cat:'global',src:'other',fmt:'web'}
+];
+
+// Partner GIS services
+const PARTNER_SERVICES = [
+  // FEMA
+  {name:'FEMA GeoPortal (ArcGIS Hub)',url:'https://gis-fema.hub.arcgis.com/',src:'fema',fmt:'web'},
+  {name:'FEMA Map Service Center',url:'https://msc.fema.gov/portal',src:'fema',fmt:'web'},
+  {name:'FEMA IA Applicant/Grid REST',url:'https://gis.fema.gov/arcgis/rest/services/FEMA/IA_Aggregate_USNG/MapServer',src:'fema',fmt:'rest'},
+  {name:'FEMA Business Disruptions FeatureServer',url:'https://services.arcgis.com/XG15cJAlne2vxtgt/arcgis/rest/services/Saber_Business_Disruptions_Public/FeatureServer',src:'fema',fmt:'rest'},
+  {name:'FEMA REST Services (Root)',url:'https://services.arcgis.com/XG15cJAlne2vxtgt/ArcGIS/rest/services',src:'fema',fmt:'rest'},
+  {name:'FEMA Shapefiles & Declarations',url:'https://gis.fema.gov/DataFeeds.html',src:'fema',fmt:'shp'},
+  {name:'Federal Disaster Declarations',url:'https://www.fema.gov/disaster/declarations',src:'fema',fmt:'web'},
+  // NWS
+  {name:'NWS REST & Feature Layers',url:'https://www.weather.gov/gis/cloudgiswebservices',src:'nws',fmt:'rest'},
+  {name:'NWS Shapefiles',url:'https://www.weather.gov/gis/NWS_Shapefile',src:'nws',fmt:'shp'},
+  {name:'NWS Services Story Map',url:'https://noaa.maps.arcgis.com/apps/MapSeries/index.html?appid=cf93575e5535467199da7358ee6c825c',src:'nws',fmt:'web'},
+  // USGS
+  {name:'USGS GIS Data',url:'https://www.usgs.gov/products/maps/gis-data',src:'usgs',fmt:'web'},
+  {name:'USGS EROS Data Center',url:'https://eros.usgs.gov/',src:'usgs',fmt:'web'},
+  {name:'National Map',url:'https://nationalmap.gov/',src:'usgs',fmt:'web'},
+  {name:'National Map Viewer',url:'https://apps.nationalmap.gov/viewer/',src:'usgs',fmt:'web'},
+  // Census
+  {name:'Census TIGER REST Services',url:'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb',src:'census',fmt:'rest'},
+  {name:'U.S. Census Bureau',url:'https://www.census.gov/',src:'census',fmt:'web'},
+  {name:'OnTheMap (Census)',url:'https://onthemap.ces.census.gov/',src:'census',fmt:'web'},
+  {name:'OnTheMap for Emergency Mgmt',url:'https://onthemap.ces.census.gov/em.html',src:'census',fmt:'web'},
+  {name:'CDC State Population Snapshots',url:'https://emergency.cdc.gov/snaps/',src:'other',fmt:'web'},
+  // Esri
+  {name:'Esri Hazard Data (100-yr Flood)',url:'http://maps3.arcgisonline.com/ArcGIS/rest/services/A-16',src:'esri',fmt:'rest'},
+  {name:'Esri Hazard & Weather REST',url:'https://services9.arcgis.com/RHVPKKiFTONKtxq3/ArcGIS/rest/services',src:'esri',fmt:'rest'},
+  // Billion Dollar Disasters
+  {name:'Billion Dollar Disasters Overview',url:'https://www.ncdc.noaa.gov/billions/overview',src:'noaa',fmt:'web'},
+  {name:'Billion Dollar Disasters Time Series',url:'https://www.ncdc.noaa.gov/billions/time-series',src:'noaa',fmt:'web'},
+  {name:'Billion Dollar Disasters by State',url:'https://www.ncdc.noaa.gov/billions/mapping',src:'noaa',fmt:'web'},
+  {name:'Billion Dollar Disasters Summary (Since 1980)',url:'https://www.ncdc.noaa.gov/billions/summary-stats',src:'noaa',fmt:'web'}
+];
+
+// ======================================================================
+// RESOURCE GENERATION
+// ======================================================================
+function stateResources(code) {
+  const s = STATES[code];
+  if (!s) return [];
+  const b = `${BASE}/website/Maps/Images/${s.dir}`;
+  const lc = code.toLowerCase();
+  const res = [];
+
+  // RC Maps
+  if (code !== 'DC') {
+    res.push({name:`${s.name} Chapter Map`,url:`${b}/RC${s.rc}_CO.pdf`,state:code,cat:'chapter-map',level:'chapter',src:'arc',fmt:'pdf'});
+  }
+  res.push({name:`${s.name} Chapter Map by County`,url:`${b}/RC${s.rc}.pdf`,state:code,cat:'chapter-map',level:'county',src:'arc',fmt:'pdf'});
+  res.push({name:`${s.name} Region Map`,url:`${b}/RC${s.region}_REG.pdf`,state:code,cat:'region-map',level:'region',src:'arc',fmt:'pdf'});
+  res.push({name:`${s.name} Region Map by County`,url:`${b}/RC${s.region}_REG_CO.pdf`,state:code,cat:'region-map',level:'county',src:'arc',fmt:'pdf'});
+
+  // External Maps
+  res.push({name:`${s.name} State Map`,url:`${b}/pagecnty_${lc}2.pdf`,state:code,cat:'state-map',level:'state',src:'other',fmt:'pdf'});
+  res.push({name:`${s.name} State Map w/ Places`,url:`${b}/pagecnty_${lc}3.pdf`,state:code,cat:'state-map',level:'state',src:'other',fmt:'pdf'});
+  res.push({name:`${s.name} FIPS Code Map`,url:`${b}/${lc}_cnty.pdf`,state:code,cat:'reference',level:'county',src:'census',fmt:'pdf'});
+  res.push({name:`${s.name} Population Density`,url:`${b}/${code}_Census2K_Profile.pdf`,state:code,cat:'demographics',level:'state',src:'census',fmt:'pdf'});
+  res.push({name:`${s.name} Federal Lands`,url:`${b}/${lc}.pdf`,state:code,cat:'reference',level:'state',src:'other',fmt:'pdf'});
+  res.push({name:`${s.name} Hydrology`,url:`${b}/pagehyd_${lc}3.pdf`,state:code,cat:'reference',level:'state',src:'usgs',fmt:'pdf'});
+  if (code !== 'AK' && code !== 'DC' && code !== 'HI') {
+    res.push({name:`${s.name} Annual Precipitation`,url:`${b}/pageprecip_${lc}3.pdf`,state:code,cat:'reference',level:'state',src:'noaa',fmt:'pdf'});
+  }
+  res.push({name:`${s.name} Physical Features`,url:`${b}/pagegen_${lc}.pdf`,state:code,cat:'reference',level:'state',src:'usgs',fmt:'pdf'});
+  res.push({name:`${s.name} Congressional Districts`,url:`${b}/pagecgd109_${lc}2.pdf`,state:code,cat:'reference',level:'state',src:'other',fmt:'pdf'});
+  res.push({name:`${s.name} NWS Forecast Areas`,url:`https://www.weather.gov/media/pimar/CWAbyState/${lc}_cwfa.pdf`,state:code,cat:'weather',level:'state',src:'nws',fmt:'pdf'});
+
+  // Evacuation maps
+  if (s.evac) {
+    res.push({name:`${s.name} Evacuation & Storm Surge`,url:`${BASE}/website/Maps/ARC_${code}_Links.html`,state:code,cat:'evacuation',level:'state',src:'arc',fmt:'web'});
+  }
+
+  // District maps
+  if (DISTRICT_MAPS[code]) {
+    DISTRICT_MAPS[code].forEach(d => {
+      res.push({name:`${s.name} District Map (${d})`,url:`${b}/${d}.pdf`,state:code,cat:'district-map',level:'chapter',src:'arc',fmt:'pdf'});
+    });
+  }
+
+  // Texas specials
+  if (code === 'TX') {
+    TX_SPECIAL.forEach(t => {
+      res.push({name:t.name,url:`${b}/${t.file}`,state:'TX',cat:'reference',level:'state',src:'arc',fmt:t.fmt});
+    });
+  }
+
+  return res;
+}
+
+function getAllResources() {
+  let all = [];
+
+  // State resources
+  Object.keys(STATES).forEach(code => {
+    all = all.concat(stateResources(code));
+  });
+
+  // Boundary geodatabases
+  BOUNDARY_DATA.forEach(d => {
+    all.push({
+      name:`Boundary GDB: ${d.name}`,
+      url:`${BASE}/website/Services/Data/${d.file}`,
+      state:'US',cat:'boundary-data',level:'national',
+      src:'arc',fmt:d.fmt||'gdb',
+      desc:d.desc
+    });
+  });
+
+  // National atlas
+  NATIONAL_ATLAS.forEach(m => {
+    all.push({
+      name:`National Atlas: ${m.name}`,
+      url:`${BASE}/website/maps/images/NationalLevel/${m.file}`,
+      state:'US',cat:'national-atlas',level:'national',
+      src:'arc',fmt:'pdf'
+    });
+  });
+
+  // Hazard resources
+  HAZARD_RESOURCES.forEach(h => {
+    all.push({
+      name:h.name,url:h.url,state:'US',
+      cat:'hazard',level:'national',src:h.src,fmt:h.fmt,
+      hazardType:h.cat
+    });
+  });
+
+  // Partner services
+  PARTNER_SERVICES.forEach(p => {
+    all.push({
+      name:p.name,url:p.url,state:'US',
+      cat:'partner-service',level:'national',src:p.src,fmt:p.fmt
+    });
+  });
+
+  // Presidential declarations
+  ['CONUS','Region 1','Region 2','Region 3','Region 4','Region 5',
+   'Region 6','Region 7','Region 8','Region 9','Region 10'].forEach((r,i) => {
+    const file = i===0?'CONUS.pdf':i===1?'FEMA_recent.jpg':`cregion${i}.jpg`;
+    // Fix: CONUS=CONUS.pdf, All Regions=FEMA_recent.jpg, Region N=cregionN.jpg
+    let f;
+    if (r==='CONUS') f='CONUS.pdf';
+    else f=`cregion${i}.jpg`;
+    all.push({
+      name:`Presidential Declarations: ${r}`,
+      url:`${BASE}/website/Maps/Images/NationalLevel/${f}`,
+      state:'US',cat:'declarations',level:'national',src:'fema',fmt:f.endsWith('.pdf')?'pdf':'img'
+    });
+  });
+
+  return all;
+}
+
+// ======================================================================
+// SEARCH ENGINE
+// ======================================================================
+let ALL_RESOURCES = [];
+let activeState = null;
+let activeFilters = {level:null,type:null,source:null,format:null};
+
+function searchScore(resource, query) {
+  if (!query) return 1;
+  const q = query.toLowerCase();
+  const terms = q.split(/\s+/).filter(Boolean);
+  const name = resource.name.toLowerCase();
+  const state = (resource.state||'').toLowerCase();
+  const cat = (resource.cat||'').toLowerCase();
+  const src = (resource.src||'').toLowerCase();
+  const fmt = (resource.fmt||'').toLowerCase();
+  const hazard = (resource.hazardType||'').toLowerCase();
+  const stateName = resource.state && STATES[resource.state] ? STATES[resource.state].name.toLowerCase() : '';
+  const searchable = `${name} ${state} ${stateName} ${cat} ${src} ${fmt} ${hazard}`;
+
+  let score = 0;
+  let allMatch = true;
+  for (const term of terms) {
+    if (searchable.includes(term)) {
+      score += 1;
+      if (name.includes(term)) score += 2;
+      if (state === term || stateName.startsWith(term)) score += 3;
+    } else {
+      allMatch = false;
+    }
+  }
+  return allMatch ? score : 0;
+}
+
+function filterResources() {
+  const query = document.getElementById('search').value.trim();
+  let results = ALL_RESOURCES.map(r => ({...r, score: searchScore(r, query)}))
+    .filter(r => r.score > 0);
+
+  // State filter
+  if (activeState) {
+    results = results.filter(r => r.state === activeState);
+  }
+
+  // Chip filters
+  if (activeFilters.level) results = results.filter(r => r.level === activeFilters.level);
+  if (activeFilters.type) results = results.filter(r => r.cat === activeFilters.type);
+  if (activeFilters.source) results = results.filter(r => r.src === activeFilters.source);
+  if (activeFilters.format) results = results.filter(r => r.fmt === activeFilters.format);
+
+  // Sort by score descending, then alphabetically
+  results.sort((a,b) => b.score - a.score || a.name.localeCompare(b.name));
+  return results;
+}
+
+// ======================================================================
+// UI RENDERING
+// ======================================================================
+const LEVEL_LABELS = {county:'County',chapter:'Chapter',region:'Region',division:'Division',state:'State',national:'National'};
+const TYPE_LABELS = {'chapter-map':'Chapter Maps','region-map':'Region Maps','district-map':'District Maps','state-map':'State Maps','reference':'Reference','demographics':'Demographics','weather':'Weather','evacuation':'Evacuation','boundary-data':'Boundary Data','national-atlas':'National Atlas','hazard':'Hazards','partner-service':'Services','declarations':'Declarations'};
+const SOURCE_LABELS = {arc:'Red Cross',fema:'FEMA',nws:'NWS',usgs:'USGS',census:'Census',esri:'Esri',noaa:'NOAA',other:'Other'};
+const FORMAT_LABELS = {pdf:'PDF',gdb:'GDB',xlsx:'Excel',web:'Web',rest:'REST',shp:'Shapefile',img:'Image'};
+
+function renderMap() {
+  const grid = document.getElementById('state-grid');
+  grid.innerHTML = '';
+  Object.entries(GRID).forEach(([code,[row,col]]) => {
+    const tile = document.createElement('div');
+    tile.className = 'state-tile';
+    tile.textContent = code;
+    tile.style.gridRow = row+1;
+    tile.style.gridColumn = col+1;
+    tile.title = STATES[code]?.name || code;
+    tile.dataset.code = code;
+    tile.addEventListener('click', () => toggleState(code));
+    grid.appendChild(tile);
+  });
+
+  const terrRow = document.getElementById('terr-row');
+  terrRow.innerHTML = '';
+  Object.keys(TERRITORIES).forEach(code => {
+    const tile = document.createElement('div');
+    tile.className = 'terr-tile';
+    tile.textContent = code;
+    tile.title = TERRITORIES[code].name;
+    tile.dataset.code = code;
+    tile.addEventListener('click', () => toggleState(code));
+    terrRow.appendChild(tile);
+  });
+}
+
+function renderFeatured() {
+  const el = document.getElementById('featured-downloads');
+  el.innerHTML = BOUNDARY_DATA.map(d => {
+    const isXlsx = d.fmt === 'xlsx';
+    const cls = isXlsx ? 'fmt-xlsx' : 'fmt-gdb';
+    const label = isXlsx ? 'XLSX' : 'GDB';
+    return `<div class="download-item">
+      <span class="fmt-badge ${cls}">${label}</span>
+      <a href="${BASE}/website/Services/Data/${d.file}" target="_blank" title="${d.desc}">${d.name}</a>
+    </div>`;
+  }).join('');
+}
+
+function renderFilters() {
+  const levels = [...new Set(ALL_RESOURCES.map(r=>r.level))].sort();
+  const types = [...new Set(ALL_RESOURCES.map(r=>r.cat))].sort();
+  const sources = [...new Set(ALL_RESOURCES.map(r=>r.src))].sort();
+  const formats = [...new Set(ALL_RESOURCES.map(r=>r.fmt))].sort();
+
+  document.getElementById('level-filters').innerHTML = levels.map(l =>
+    `<button class="chip" data-group="level" data-value="${l}">${LEVEL_LABELS[l]||l}</button>`
+  ).join('');
+  document.getElementById('type-filters').innerHTML = types.map(t =>
+    `<button class="chip" data-group="type" data-value="${t}">${TYPE_LABELS[t]||t}</button>`
+  ).join('');
+  document.getElementById('source-filters').innerHTML = sources.map(s =>
+    `<button class="chip" data-group="source" data-value="${s}">${SOURCE_LABELS[s]||s}</button>`
+  ).join('');
+  document.getElementById('format-filters').innerHTML = formats.map(f =>
+    `<button class="chip" data-group="format" data-value="${f}">${FORMAT_LABELS[f]||f}</button>`
+  ).join('');
+
+  // Chip click handlers
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const group = chip.dataset.group;
+      const value = chip.dataset.value;
+      if (activeFilters[group] === value) {
+        activeFilters[group] = null;
+        chip.classList.remove('active');
+      } else {
+        document.querySelectorAll(`.chip[data-group="${group}"]`).forEach(c => c.classList.remove('active'));
+        activeFilters[group] = value;
+        chip.classList.add('active');
+      }
+      updateClearBtn();
+      update();
+    });
+  });
+}
+
+function updateClearBtn() {
+  const hasFilters = Object.values(activeFilters).some(Boolean) || activeState;
+  document.getElementById('clear-all').style.display = hasFilters ? 'inline' : 'none';
+}
+
+function renderResults(results) {
+  const el = document.getElementById('results');
+  const titleEl = document.getElementById('results-title');
+  const infoEl = document.getElementById('results-info');
+  const countEl = document.getElementById('result-count');
+
+  // Title
+  if (activeState) {
+    const sName = STATES[activeState]?.name || TERRITORIES[activeState]?.name || activeState;
+    titleEl.textContent = sName;
+  } else {
+    titleEl.textContent = document.getElementById('search').value.trim() ? 'Search Results' : 'All Resources';
+  }
+
+  infoEl.textContent = `${results.length} resource${results.length!==1?'s':''}`;
+  countEl.textContent = results.length;
+
+  if (results.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="big">No matches</div><p>Try a different search or clear your filters</p></div>';
+    return;
+  }
+
+  // Group by category
+  const grouped = {};
+  results.forEach(r => {
+    const cat = r.cat;
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(r);
+  });
+
+  // Category display order
+  const catOrder = ['chapter-map','region-map','district-map','boundary-data','national-atlas','state-map','evacuation','hazard','weather','demographics','reference','partner-service','declarations'];
+  const sortedCats = Object.keys(grouped).sort((a,b) => {
+    const ai = catOrder.indexOf(a); const bi = catOrder.indexOf(b);
+    return (ai===-1?99:ai) - (bi===-1?99:bi);
+  });
+
+  let html = '';
+  sortedCats.forEach(cat => {
+    const items = grouped[cat];
+    html += `<div class="category-header">${TYPE_LABELS[cat]||cat} <span class="cat-count">${items.length}</span></div>`;
+    items.forEach(r => {
+      const fmtClass = `fmt-${r.fmt}`;
+      const srcClass = `src-${r.src}`;
+      const fmtLabel = FORMAT_LABELS[r.fmt]||r.fmt;
+      const srcLabel = SOURCE_LABELS[r.src]||r.src;
+      const subtitle = r.state && r.state !== 'US' ? (STATES[r.state]?.name||r.state) + (r.hazardType ? ` / ${r.hazardType}` : '') : (r.hazardType||'');
+      html += `<div class="result-card">
+        <span class="fmt-badge ${fmtClass}">${fmtLabel}</span>
+        <div class="name">
+          <a href="${r.url}" target="_blank" title="${r.url}">${r.name}</a>
+          ${subtitle ? `<div class="subtitle">${subtitle}</div>` : ''}
+        </div>
+        <div class="badges">
+          <span class="source-badge ${srcClass}">${srcLabel}</span>
+          <button class="copy-btn" onclick="copyUrl(this,'${r.url.replace(/'/g,"\\'")}')">Copy URL</button>
+        </div>
+      </div>`;
+    });
+  });
+
+  el.innerHTML = html;
+}
+
+// ======================================================================
+// INTERACTIONS
+// ======================================================================
+function toggleState(code) {
+  if (activeState === code) {
+    activeState = null;
+  } else {
+    activeState = code;
+  }
+  highlightMap();
+  updateClearBtn();
+  update();
+}
+
+function highlightMap() {
+  // Clear all tiles
+  document.querySelectorAll('.state-tile, .terr-tile').forEach(t => {
+    t.classList.remove('active','region-match');
+  });
+
+  if (!activeState) return;
+
+  // Highlight selected
+  const activeTile = document.querySelector(`[data-code="${activeState}"]`);
+  if (activeTile) activeTile.classList.add('active');
+
+  // Highlight region partners
+  const region = STATES[activeState]?.region || TERRITORIES[activeState]?.region;
+  if (region) {
+    Object.entries(STATES).forEach(([code, s]) => {
+      if (code !== activeState && s.region === region) {
+        const tile = document.querySelector(`[data-code="${code}"]`);
+        if (tile) tile.classList.add('region-match');
+      }
+    });
+  }
+}
+
+function copyUrl(btn, url) {
+  navigator.clipboard.writeText(url).then(() => {
+    btn.classList.add('copied');
+    btn.textContent = 'Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.textContent = 'Copy URL';
+    }, 1500);
+  });
+}
+
+function clearAll() {
+  activeState = null;
+  activeFilters = {level:null,type:null,source:null,format:null};
+  document.getElementById('search').value = '';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  highlightMap();
+  updateClearBtn();
+  update();
+}
+
+function update() {
+  const results = filterResources();
+  renderResults(results);
+}
+
+// ======================================================================
+// KEYBOARD SHORTCUTS
+// ======================================================================
+document.addEventListener('keydown', e => {
+  // Escape clears everything
+  if (e.key === 'Escape') {
+    clearAll();
+    document.getElementById('search').focus();
+  }
+  // / focuses search
+  if (e.key === '/' && document.activeElement !== document.getElementById('search')) {
+    e.preventDefault();
+    document.getElementById('search').focus();
+  }
+});
+
+// ======================================================================
+// INIT
+// ======================================================================
+function init() {
+  ALL_RESOURCES = getAllResources();
+  renderMap();
+  renderFeatured();
+  renderFilters();
+  update();
+
+  // Search input
+  let debounce;
+  document.getElementById('search').addEventListener('input', () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(update, 150);
+  });
+
+  // Clear button
+  document.getElementById('clear-all').addEventListener('click', clearAll);
+
+  console.log(`Tune-Mapomatic loaded: ${ALL_RESOURCES.length} resources indexed`);
+}
+
+init();
+</script>
+</body>
+</html>
