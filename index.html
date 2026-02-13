@@ -136,9 +136,10 @@ footer a:hover{text-decoration:underline}
 .lookup-card{padding:8px 10px;border-bottom:1px solid #eee;font-size:.86em;line-height:1.5}
 .lookup-card:last-child{border-bottom:none}
 .lookup-card:hover{background:#fdf0f2}
-.lookup-card .lk-county{font-weight:700;color:#1a1a1a}
-.lookup-card .lk-chapter{color:#1a1a1a}
-.lookup-card .lk-codes{color:#1a1a1a;font-family:monospace}
+.lookup-card .lk-county{font-weight:700;color:#DC143C}
+.lookup-card .lk-fips{font-weight:600;color:#1a5276}
+.lookup-card .lk-chapter{color:#1e8449}
+.lookup-card .lk-codes{color:#6c3483;font-family:monospace;font-weight:600}
 
 /* LOADING */
 .skeleton{background:linear-gradient(90deg,#e8e8e8 25%,#f0f0f0 50%,#e8e8e8 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;height:40px;border-radius:5px;margin-bottom:4px}
@@ -1240,7 +1241,7 @@ function searchLookup(query){
   capped.forEach(c=>{
     const ch=LK_CHAPTERS[c.e]||{};
     html+=`<div class="lookup-card">
-      <div class="lk-county">${c.c}, ${c.s} &nbsp;<span class="lk-codes">FIPS ${c.f}</span></div>
+      <div class="lk-county">${c.c}, ${c.s} &nbsp;<span class="lk-fips">FIPS ${c.f}</span></div>
       <div class="lk-chapter">${ch.n||'—'}</div>
       <div class="lk-codes">ECODE ${c.e} &nbsp; RCODE ${ch.rc||'—'} &nbsp; DCODE ${ch.dc||'—'}</div>
     </div>`;
